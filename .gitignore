@@ -2,6 +2,16 @@ Debug
 Release
 build
 
+CppSkeleton
+TestSkeleton
+
+CMakeCache.txt
+CMakeFiles
+*.cmake
+*.dir
+Testing/
+
+Makefile
 *.ncb
 *.suo
 *.user
@@ -12,9 +22,3 @@ doc
 core
 *ipch
 .settings/
-
-CMakeCache.txt
-CMakeFiles
-*.cmake
-*.dir
-
