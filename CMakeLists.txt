@@ -1,6 +1,11 @@
 cmake_minimum_required (VERSION 2.6)
 project (CppSkeleton)
 
+if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
 # add the application executable
 add_executable (CppSkeleton
  src/main.cpp
