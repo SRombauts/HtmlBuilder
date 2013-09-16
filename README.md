@@ -9,6 +9,13 @@ Copyright (c) 2013 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Building & testing with CMake
 
+### Get Google Test submodule
+
+```bash
+git submodule init
+git submodule update
+```
+
 ### Typical generic build (see also "build.bat" or "./build.sh")
 
 ```bash
