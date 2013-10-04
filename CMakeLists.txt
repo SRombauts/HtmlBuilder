@@ -9,16 +9,30 @@ project (CppSkeleton)
 if(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    set(CCPPLINT_ARG_OUTPUT "--output=vs7")
+    add_definitions (/D_CRT_SECURE_NO_WARNINGS)
+else()
+    set(CCPPLINT_ARG_OUTPUT "--output=eclipse")
+#   add_definitions (-std=c++0x)  # -std=c++11
 endif()
+set(CCPPLINT_ARG_VERBOSE "--verbose=3")
 
 # add the application executable
 add_executable (CppSkeleton
  src/main.cpp
  src/foo.cpp src/foo.h)
 
+# add a cpplint target
+add_custom_target(cpplint
+ ALL
+ COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CCPPLINT_ARG_OUTPUT} ${CCPPLINT_ARG_VERBOSE} ${PROJECT_SOURCE_DIR}/src/* 
+)
+
 # add the subdirectory containing the CMakeLists.txt for the gtest library
 add_subdirectory (googletest) 
 include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
+
+include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 # add the test executable
 add_executable (TestSkeleton
