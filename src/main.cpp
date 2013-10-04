@@ -9,7 +9,7 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "foo.h"
+#include "base/foo.h"
 
 int main() {
     return Foo::Incr(-1);

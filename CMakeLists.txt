@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
@@ -20,7 +20,7 @@ set(CCPPLINT_ARG_VERBOSE "--verbose=3")
 # add the application executable
 add_executable (CppSkeleton
  src/main.cpp
- src/foo.cpp src/foo.h)
+ src/base/foo.cpp src/base/foo.h)
 
 # add a cpplint target
 add_custom_target(cpplint
@@ -36,7 +36,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 # add the test executable
 add_executable (TestSkeleton
- src/foo.cpp src/foo.h src/foo_test.cpp)
+ src/base/foo.cpp src/base/foo.h src/base/foo_test.cpp)
 target_link_libraries (TestSkeleton gtest_main)
  
 # add a "test" target:
