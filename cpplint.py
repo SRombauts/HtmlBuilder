@@ -877,8 +877,15 @@ def Error(filename, linenum, category, confidence, message):
       sys.stderr.write('%s(%s):  %s  [%s] [%d]\n' % (
           filename, linenum, message, category, confidence))
     elif _cpplint_state.output_format == 'eclipse':
-      sys.stderr.write('%s:%s: warning: %s  [%s] [%d]\n' % (
-          filename, linenum, message, category, confidence))
+      if confidence == 5:
+        sys.stderr.write('%s:%s: error: %s  [%s] [%d]\n' % (
+            filename, linenum, message, category, confidence))
+      elif confidence == 4:
+        sys.stderr.write('%s:%s: warning: %s  [%s] [%d]\n' % (
+            filename, linenum, message, category, confidence))
+      else:
+        sys.stderr.write('%s:%s: note: %s  [%s] [%d]\n' % (
+            filename, linenum, message, category, confidence))
     else:
       sys.stderr.write('%s:%s:  %s  [%s] [%d]\n' % (
           filename, linenum, message, category, confidence))
@@ -1132,6 +1139,7 @@ def GetHeaderGuardCPPVariable(filename):
   return re.sub(r'[-./\s]', '_', file_path_from_root).upper() + '_'
 
 
+# TODO(SRombauts) search instead for "#pragma once"
 def CheckForHeaderGuard(filename, lines, error):
   """Checks that the file contains a header guard.
 
@@ -1167,13 +1175,13 @@ def CheckForHeaderGuard(filename, lines, error):
       endif_linenum = linenum
 
   if not ifndef:
-    error(filename, 0, 'build/header_guard', 5,
+    error(filename, 0, 'build/header_guard', 2,
           'No #ifndef header guard found, suggested CPP variable is: %s' %
           cppvar)
     return
 
   if not define:
-    error(filename, 0, 'build/header_guard', 5,
+    error(filename, 0, 'build/header_guard', 2,
           'No #define header guard found, suggested CPP variable is: %s' %
           cppvar)
     return
@@ -2241,10 +2249,10 @@ def CheckSpacing(filename, clean_lines, linenum, nesting_state, error):
       # OK, we have a blank line at the start of a code block.  Before we
       # complain, we check if it is an exception to the rule: The previous
       # non-empty line has the parameters of a function header that are indented
-      # 4 spaces (because they did not fit in a 80 column line when placed on
+      # 4 spaces (because they did not fit in a 120 column line when placed on
       # the same line as the function name).  We also check for the case where
       # the previous line is indented 6 spaces, which may happen when the
-      # initializers of a constructor do not fit into a 80 column line.
+      # initializers of a constructor do not fit into a 120 column line.
       exception = False
       if Match(r' {6}\w', prev_line):  # Initializer list?
         # We are looking for the opening column of initializer list, which
@@ -2836,19 +2844,19 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
     error(filename, linenum, 'whitespace/end_of_line', 4,
           'Line ends in whitespace.  Consider deleting these extra spaces.')
   # There are certain situations we allow one space, notably for labels
-  elif ((initial_spaces == 1 or initial_spaces == 3) and
+  elif ((initial_spaces in (1,2,3,5,6,7)) and
         not Match(r'\s*\w+\s*:\s*$', cleansed_line)):
     error(filename, linenum, 'whitespace/indent', 3,
           'Weird number of spaces at line-start.  '
-          'Are you using a 2-space indent?')
-  # Labels should always be indented at least one space.
-  elif not initial_spaces and line[:2] != '//' and Search(r'[^:]:\s*$',
-                                                          line):
-    error(filename, linenum, 'whitespace/labels', 4,
-          'Labels should always be indented at least one space.  '
-          'If this is a member-initializer list in a constructor or '
-          'the base class list in a class definition, the colon should '
-          'be on the following line.')
+          'Are you using a 4-space indent?')
+#  # Labels should always be indented at least one space.
+#  elif not initial_spaces and line[:2] != '//' and Search(r'[^:]:\s*$',
+#                                                          line):
+#    error(filename, linenum, 'whitespace/labels', 4,
+#          'Labels should always be indented at least one space.  '
+#          'If this is a member-initializer list in a constructor or '
+#          'the base class list in a class definition, the colon should '
+#          'be on the following line.')
 
 
   # Check if the line is a header guard.
@@ -2871,12 +2879,12 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
       not Match(r'^\s*//.*http(s?)://\S*$', line) and
       not Match(r'^// \$Id:.*#[0-9]+ \$$', line)):
     line_width = GetLineWidth(line)
-    if line_width > 100:
+    if line_width > 140:
       error(filename, linenum, 'whitespace/line_length', 4,
             'Lines should very rarely be longer than 100 characters')
-    elif line_width > 80:
+    elif line_width > 120:
       error(filename, linenum, 'whitespace/line_length', 2,
-            'Lines should be <= 80 characters long')
+            'Lines should be <= 120 characters long')
 
   if (cleansed_line.count(';') > 1 and
       # for loops are allowed two ;'s (and may run over two lines).
@@ -3037,7 +3045,7 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
 
   # "include" should use the new style "foo/bar.h" instead of just "bar.h"
   if _RE_PATTERN_INCLUDE_NEW_STYLE.search(line):
-    error(filename, linenum, 'build/include', 4,
+    error(filename, linenum, 'build/include', 2,
           'Include the directory when naming .h files')
 
   # we shouldn't include a file more than once. actually, there are a
@@ -3048,7 +3056,7 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
     include = match.group(2)
     is_system = (match.group(1) == '<')
     if include in include_state:
-      error(filename, linenum, 'build/include', 4,
+      error(filename, linenum, 'build/include', 5,
             '"%s" already included at %s:%s' %
             (include, filename, include_state[include]))
     else:

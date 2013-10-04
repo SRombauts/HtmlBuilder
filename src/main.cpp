@@ -8,10 +8,9 @@
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
  */
- 
+
 #include "foo.h"
 
-int main()
-{
+int main() {
     return Foo::Incr(-1);
 }

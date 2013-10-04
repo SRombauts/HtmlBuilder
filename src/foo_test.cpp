@@ -1,10 +1,21 @@
+/**
+ * @file    foo_test.cpp
+ * @ingroup CppSkeleton
+ * @brief   A simple skeleton for C++ development with CMake and Google Test.
+ *
+ * Copyright (c) 2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ *
+ * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
+ * or copy at http://opensource.org/licenses/MIT)
+ */
+
 #include "foo.h"
-#include "gtest/gtest.h"
 
 #include <limits>
 
-TEST(Foo,Incr)
-{
+#include "gtest/gtest.h"
+
+TEST(Foo, Incr) {
     EXPECT_EQ(0, Foo::Incr(-1));
     EXPECT_EQ(1, Foo::Incr(0));
     EXPECT_EQ(2, Foo::Incr(1));
