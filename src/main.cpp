@@ -9,8 +9,18 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "base/foo.h"
+#include <cstdio>
+
+#include "base/time.h"
 
 int main() {
-    return Foo::Incr(-1);
+    time_t startUs = Time::getTickUs();
+    // Do something ...
+    time_t endUs   = Time::getTickUs();
+
+    time_t deltaUs = Time::diff(startUs, endUs);
+
+    printf("elpased time: %luus\n", deltaUs);
+
+    return 0;
 }

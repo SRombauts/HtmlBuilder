@@ -20,12 +20,13 @@ set(CCPPLINT_ARG_VERBOSE "--verbose=3")
 # add the application executable
 add_executable (CppSkeleton
  src/main.cpp
- src/base/foo.cpp src/base/foo.h)
+ src/base/time.cpp src/base/time.h)
+target_link_libraries (CppSkeleton rt)
 
 # add a cpplint target
 add_custom_target(cpplint
  ALL
- COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CCPPLINT_ARG_OUTPUT} ${CCPPLINT_ARG_VERBOSE} ${PROJECT_SOURCE_DIR}/src/* 
+ COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CCPPLINT_ARG_OUTPUT} ${CCPPLINT_ARG_VERBOSE} ${PROJECT_SOURCE_DIR}/src/*.* ${PROJECT_SOURCE_DIR}/src/*/*.* 
 )
 
 # add the subdirectory containing the CMakeLists.txt for the gtest library
@@ -36,8 +37,8 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 # add the test executable
 add_executable (TestSkeleton
- src/base/foo.cpp src/base/foo.h src/base/foo_test.cpp)
-target_link_libraries (TestSkeleton gtest_main)
+ src/base/time.cpp src/base/time.h src/base/time_test.cpp)
+target_link_libraries (TestSkeleton rt gtest_main)
  
 # add a "test" target:
 enable_testing()

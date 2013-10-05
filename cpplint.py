@@ -3314,7 +3314,7 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
   else:
     match = Search(r'\b(short|long(?! +double)|long long)\b', line)
     if match:
-      error(filename, linenum, 'runtime/int', 4,
+      error(filename, linenum, 'runtime/int', 2,
             'Use int16/int64/etc, rather than the C type %s' % match.group(1))
 
   # When snprintf is used, the second argument shouldn't be a literal.
