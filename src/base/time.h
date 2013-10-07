@@ -1,6 +1,6 @@
 /**
  * @file    time.h
- * @ingroup CppSkeleton
+ * @ingroup base
  * @brief   Simple time tools.
  *
  * Copyright (c) 2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
