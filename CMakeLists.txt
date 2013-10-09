@@ -21,7 +21,11 @@ set(CCPPLINT_ARG_VERBOSE "--verbose=3")
 add_executable (CppSkeleton
  src/main.cpp
  src/base/time.cpp src/base/time.h)
-target_link_libraries (CppSkeleton rt)
+if(MSVC)
+    target_link_libraries (CppSkeleton)
+else()
+    target_link_libraries (CppSkeleton rt)
+endif()
 
 # add a cpplint target
 add_custom_target(cpplint
@@ -38,8 +42,12 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 # add the test executable
 add_executable (TestSkeleton
  src/base/time.cpp src/base/time.h src/base/time_test.cpp)
-target_link_libraries (TestSkeleton rt gtest_main)
- 
+if(MSVC)
+    target_link_libraries (TestSkeleton gtest_main)
+else()
+    target_link_libraries (TestSkeleton rt gtest_main)
+endif()
+
 # add a "test" target:
 enable_testing()
 

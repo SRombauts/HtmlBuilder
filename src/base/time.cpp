@@ -11,9 +11,15 @@
 
 #include "time.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
+
+// Get tick in milliseconds
 time_t Time::getTickMs() {
     time_t          TickMs = 0;
+#if defined(__GNUC__)
     int             Res;
     struct timespec ts_now;
 
@@ -22,12 +28,23 @@ time_t Time::getTickMs() {
     if (0 == Res) {
         TickMs = (ts_now.tv_sec * 1000) + (ts_now.tv_nsec / 1000000);
     }
+#elif defined(_WIN32) 
+    LARGE_INTEGER freq; 
+    if (FALSE != QueryPerformanceFrequency(&freq))
+    {
+        LARGE_INTEGER t1;
+        QueryPerformanceCounter(&t1);
+        TickMs = (time_t) ((t1.QuadPart) / (freq.QuadPart / 1000));
+    } 
+#endif
 
     return TickMs;
 }
 
+// Get tick in microseconds
 time_t Time::getTickUs() {
     time_t          TickUs = 0;
+#if defined(__GNUC__)
     int             Res;
     struct timespec ts_now;
 
@@ -36,10 +53,21 @@ time_t Time::getTickUs() {
     if (0 == Res) {
         TickUs = (ts_now.tv_sec * 1000000) + (ts_now.tv_nsec / 1000);
     }
+#elif defined(_WIN32) 
+    LARGE_INTEGER freq; 
+    // TODO(SRombauts) could be done only once ?
+    if (FALSE != QueryPerformanceFrequency(&freq))
+    {
+        LARGE_INTEGER t1;
+        QueryPerformanceCounter(&t1);
+        TickUs = (time_t) ((t1.QuadPart) / (freq.QuadPart / 1000000));
+    } 
+#endif  // __GNUC__
 
     return TickUs;
 }
 
+// Calculate difference between consecutive ticks
 time_t Time::diff(const time_t aStartTime, const time_t aEndTime) {
     time_t deltaTime;
     if (aStartTime <= aEndTime) {

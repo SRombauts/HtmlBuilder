@@ -15,12 +15,16 @@
 
 int main() {
     time_t startUs = Time::getTickUs();
-    // Do something ...
+    // Do something in a few us ...
     time_t endUs   = Time::getTickUs();
-
     time_t deltaUs = Time::diff(startUs, endUs);
-
     printf("elpased time: %luus\n", deltaUs);
+
+    time_t startMs = Time::getTickMs();
+    // Do something in a few ms...
+    time_t endMs   = Time::getTickMs();
+    time_t deltaMs = Time::diff(startMs, endMs);
+    printf("elpased time: %lums\n", deltaMs);
 
     return 0;
 }

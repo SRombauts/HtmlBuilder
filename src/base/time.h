@@ -17,11 +17,11 @@
 class Time {
 public:
     /**
-     * @brief Get tick in microseconds
+     * @brief Get tick in milliseconds
      */
     static time_t getTickMs();
     /**
-     * @brief Get tick in milliseconds
+     * @brief Get tick in microseconds
      */
     static time_t getTickUs();
     /**
