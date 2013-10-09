@@ -174,6 +174,7 @@ _ERROR_CATEGORIES = [
   'build/printf_format',
   'build/storage_class',
   'legal/copyright',
+  'readability/filename',
   'readability/alt_tokens',
   'readability/braces',
   'readability/casting',
@@ -193,6 +194,7 @@ _ERROR_CATEGORIES = [
   'runtime/explicit',
   'runtime/int',
   'runtime/init',
+  'runtime/preincrement',
   'runtime/invalid_increment',
   'runtime/member_string_references',
   'runtime/memset',
@@ -621,9 +623,10 @@ class _CppLintState(object):
   def PrintErrorCounts(self):
     """Print a summary of errors by category, and the total."""
     for category, count in self.errors_by_category.iteritems():
-      sys.stderr.write('Category \'%s\' errors found: %d\n' %
+      sys.stderr.write('cpplint: Category \'%s\' errors found: %d\n' %
                        (category, count))
-    sys.stderr.write('Total errors found: %d\n' % self.error_count)
+    if 0 < self.error_count:
+      sys.stderr.write('cpplint: Total errors found: %d\n' % self.error_count)
 
 _cpplint_state = _CppLintState()
 
@@ -1114,6 +1117,28 @@ def CheckForCopyright(filename, lines, error):
           'No copyright message found.  '
           'You should have a line: "Copyright [year] <Copyright Owner>"')
 
+def CheckForFilename(filename, lines, error):
+  """Logs an error if the Filename does not appear at the top of the file."""
+
+  basename = os.path.basename(filename)
+
+  # We'll say it should occur by line 10.
+  for linenum in xrange(1, min(len(lines), 11)):
+    if Search(r'NOLINT\(begin\)', lines[linenum]):
+      return
+    match_file = Match(r'^.*@file\s+(.*)$', lines[linenum])
+    if match_file:
+      filename_found = match_file.group(1)
+      if filename_found.endswith(basename):
+        break
+      else: 
+        error(filename, linenum, 'readability/filename', 5,
+              'Doxygen header "@file %s" does not match "%s" real file name.' % (filename_found, basename) )
+        break
+  else: # means no @file tag was found
+    error(filename, 0, 'doxygen/filename', 5,
+          'Doxygen header "@file %s" not found.' % basename)
+
 
 def GetHeaderGuardCPPVariable(filename):
   """Returns the CPP variable that should be used as a header guard.
@@ -1191,7 +1216,7 @@ def CheckForHeaderGuard(filename, lines, error):
   if ifndef != cppvar:
     error_level = 0
     if ifndef != cppvar + '_':
-      error_level = 5
+      error_level = 2
 
     ParseNolintSuppressions(filename, lines[ifndef_linenum], ifndef_linenum,
                             error)
@@ -1199,7 +1224,7 @@ def CheckForHeaderGuard(filename, lines, error):
           '#ifndef header guard has wrong style, please use: %s' % cppvar)
 
   if define != ifndef:
-    error(filename, 0, 'build/header_guard', 5,
+    error(filename, 0, 'build/header_guard', 2,
           '#ifndef and #define don\'t match, suggested CPP variable is: %s' %
           cppvar)
     return
@@ -1207,7 +1232,7 @@ def CheckForHeaderGuard(filename, lines, error):
   if endif != ('#endif  // %s' % cppvar):
     error_level = 0
     if endif != ('#endif  // %s' % (cppvar + '_')):
-      error_level = 5
+      error_level = 2
 
     ParseNolintSuppressions(filename, lines[endif_linenum], endif_linenum,
                             error)
@@ -2313,7 +2338,7 @@ def CheckSpacing(filename, clean_lines, linenum, nesting_state, error):
             line[commentpos-2] not in string.whitespace))):
         error(filename, linenum, 'whitespace/comments', 2,
               'At least two spaces is best between code and comments')
-      # There should always be a space between the // and the comment
+      # There should always be a space between the // (or /// or //! or //!<) and the comment
       commentend = commentpos + 2
       if commentend < len(line) and not line[commentend] == ' ':
         # but some lines are exceptions -- e.g. if they're big
@@ -2573,7 +2598,7 @@ def GetPreviousNonBlankLine(clean_lines, linenum):
     prevlinenum -= 1
   return ('', -1)
 
-
+# TODO(SRombauts) detects if/else/for/while without an opening brace on the same line
 def CheckBraces(filename, clean_lines, linenum, error):
   """Looks for misplaced braces (e.g. at the end of line).
 
@@ -2821,8 +2846,8 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
   line = raw_lines[linenum]
 
   if line.find('\t') != -1:
-    error(filename, linenum, 'whitespace/tab', 1,
-          'Tab found; better to use spaces')
+    error(filename, linenum, 'whitespace/tab', 5,
+          'Tab found; use spaces indents only')
 
   # One or three blank spaces at the beginning of the line is weird; it's
   # hard to reconcile that with 2-space indents.
@@ -2844,7 +2869,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
     error(filename, linenum, 'whitespace/end_of_line', 4,
           'Line ends in whitespace.  Consider deleting these extra spaces.')
   # There are certain situations we allow one space, notably for labels
-  elif ((initial_spaces in (1,2,3,5,6,7)) and
+  elif ((initial_spaces == 1 or initial_spaces == 3) and
         not Match(r'\s*\w+\s*:\s*$', cleansed_line)):
     error(filename, linenum, 'whitespace/indent', 3,
           'Weird number of spaces at line-start.  '
@@ -2881,7 +2906,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
     line_width = GetLineWidth(line)
     if line_width > 140:
       error(filename, linenum, 'whitespace/line_length', 4,
-            'Lines should very rarely be longer than 100 characters')
+            'Lines should very rarely be longer than 140 characters')
     elif line_width > 120:
       error(filename, linenum, 'whitespace/line_length', 2,
             'Lines should be <= 120 characters long')
@@ -3196,23 +3221,24 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
   # paren (for fn-prototype start), typename, &, varname.  For the const
   # version, we're willing for const to be before typename or after
   # Don't check the implementation on same line.
-  fnline = line.split('{', 1)[0]
-  if (len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) >
-      len(re.findall(r'\([^()]*\bconst\s+(?:typename\s+)?(?:struct\s+)?'
-                     r'(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) +
-      len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+\s+const(\s?&|&\s?)[\w]+',
-                     fnline))):
-
-    # We allow non-const references in a few standard places, like functions
-    # called "swap()" or iostream operators like "<<" or ">>". We also filter
-    # out for loops, which lint otherwise mistakenly thinks are functions.
-    if not Search(
-        r'(for|swap|Swap|operator[<>][<>])\s*\(\s*'
-        r'(?:(?:typename\s*)?[\w:]|<.*>)+\s*&',
-        fnline):
-      error(filename, linenum, 'runtime/references', 2,
-            'Is this a non-const reference? '
-            'If so, make const or use a pointer.')
+  # NOTE SRombauts: Commented out
+  #fnline = line.split('{', 1)[0]
+  #if (len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) >
+  #    len(re.findall(r'\([^()]*\bconst\s+(?:typename\s+)?(?:struct\s+)?'
+  #                   r'(?:[\w:]|<[^()]*>)+(\s?&|&\s?)\w+', fnline)) +
+  #    len(re.findall(r'\([^()]*\b(?:[\w:]|<[^()]*>)+\s+const(\s?&|&\s?)[\w]+',
+  #                   fnline))):
+  #
+  #  # We allow non-const references in a few standard places, like functions
+  #  # called "swap()" or iostream operators like "<<" or ">>". We also filter
+  #  # out for loops, which lint otherwise mistakenly thinks are functions.
+  #  if not Search(
+  #      r'(for|swap|Swap|operator[<>][<>])\s*\(\s*'
+  #      r'(?:(?:typename\s*)?[\w:]|<.*>)+\s*&',
+  #      fnline):
+  #    error(filename, linenum, 'runtime/references', 2,
+  #          'Is this a non-const reference? '
+  #          'If so, make const or use a pointer.')
 
   # Check to see if they're using an conversion function cast.
   # I just try to capture the most common basic types, though there are more.
@@ -3453,6 +3479,13 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
           'http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Namespaces'
           ' for more information.')
 
+  # SRombauts: Detects post increment/decrement: sugests preincrement/predecrement instead
+  match = Search(r'(\w+)(\+\+|--)', line)
+  if match:
+    error(filename, linenum, 'runtime/preincrement', 4,
+          'Considere using "%s%s". '
+          '"%s%s" does a copy of "%s" which can be expensive for non simple scalar type.'
+          % (match.group(2), match.group(1), match.group(1), match.group(2), match.group(1)) )
 
 def CheckCStyleCast(filename, linenum, line, raw_line, cast_type, pattern,
                     error):
@@ -3845,6 +3878,8 @@ def ProcessFileData(filename, file_extension, lines, error,
 
   ResetNolintSuppressions()
 
+  # file scope rules (header, includes...)
+  CheckForFilename(filename, lines, error)
   CheckForCopyright(filename, lines, error)
 
   if file_extension == 'h':
@@ -3920,18 +3955,19 @@ def ProcessFile(filename, vlevel, extra_check_functions=[]):
   # should rely on the extension.
   if (filename != '-' and file_extension != 'cc' and file_extension != 'h'
       and file_extension != 'cpp'):
-    sys.stderr.write('Ignoring %s; not a .cc or .h file\n' % filename)
+    #sys.stderr.write('cpplint:0: Ignoring %s; not a .cc or .h file\n' % filename)
+    None
   else:
     ProcessFileData(filename, file_extension, lines, Error,
                     extra_check_functions)
-    if carriage_return_found and os.linesep != '\r\n':
-      # Use 0 for linenum since outputting only one error for potentially
+    if carriage_return_found:
+      # Outputting only one error for potentially
       # several lines.
-      Error(filename, 0, 'whitespace/newline', 1,
-            'One or more unexpected \\r (^M) found;'
-            'better to use only a \\n')
+      Error(filename, carriage_return_found, 'whitespace/newline', 5,
+            'One or more carriage-return \\r (^M) (Windows endline) found; '
+            'Use only UNIX endline \\n')
 
-  sys.stderr.write('Done processing %s\n' % filename)
+  #sys.stderr.write('cpplint:0: Done processing %s\n' % filename)
 
 
 def PrintUsage(message):

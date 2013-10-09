@@ -28,14 +28,13 @@ time_t Time::getTickMs() {
     if (0 == Res) {
         TickMs = (ts_now.tv_sec * 1000) + (ts_now.tv_nsec / 1000000);
     }
-#elif defined(_WIN32) 
-    LARGE_INTEGER freq; 
-    if (FALSE != QueryPerformanceFrequency(&freq))
-    {
+#elif defined(_WIN32)
+    LARGE_INTEGER freq;
+    if (FALSE != QueryPerformanceFrequency(&freq)) {
         LARGE_INTEGER t1;
         QueryPerformanceCounter(&t1);
         TickMs = (time_t) ((t1.QuadPart) / (freq.QuadPart / 1000));
-    } 
+    }
 #endif
 
     return TickMs;
@@ -53,15 +52,14 @@ time_t Time::getTickUs() {
     if (0 == Res) {
         TickUs = (ts_now.tv_sec * 1000000) + (ts_now.tv_nsec / 1000);
     }
-#elif defined(_WIN32) 
-    LARGE_INTEGER freq; 
+#elif defined(_WIN32)
+    LARGE_INTEGER freq;
     // TODO(SRombauts) could be done only once ?
-    if (FALSE != QueryPerformanceFrequency(&freq))
-    {
+    if (FALSE != QueryPerformanceFrequency(&freq)) {
         LARGE_INTEGER t1;
         QueryPerformanceCounter(&t1);
         TickUs = (time_t) ((t1.QuadPart) / (freq.QuadPart / 1000000));
-    } 
+    }
 #endif  // __GNUC__
 
     return TickUs;
