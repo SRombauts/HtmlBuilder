@@ -20,17 +20,30 @@ set(CCPPLINT_ARG_VERBOSE "--verbose=3")
 # add the application executable
 add_executable (CppSkeleton
  src/main.cpp
- src/base/time.cpp src/base/time.h)
+ src/utils/datetime.cpp src/utils/datetime.h
+ src/utils/measure.cpp src/utils/measure.h
+ src/utils/random.cpp src/utils/random.h
+ src/utils/time.cpp src/utils/time.h
+ src/utils/utils.h)
+
 if(MSVC)
     target_link_libraries (CppSkeleton)
 else()
     target_link_libraries (CppSkeleton rt)
 endif()
 
-# add a cpplint target
+# add a cpplint target to the "all" target
 add_custom_target(cpplint
  ALL
- COMMAND python ${PROJECT_SOURCE_DIR}/cpplint.py ${CCPPLINT_ARG_OUTPUT} ${CCPPLINT_ARG_VERBOSE} ${PROJECT_SOURCE_DIR}/src/*.* ${PROJECT_SOURCE_DIR}/src/*/*.* 
+ COMMAND python cpplint.py ${CCPPLINT_ARG_OUTPUT} ${CCPPLINT_ARG_VERBOSE} src/*.* src/*/*.* 
+ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+# add a Doxygen target to the "all" target
+add_custom_target(doxygen
+ ALL
+ COMMAND doxygen Doxyfile > /dev/null 
+ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 # add the subdirectory containing the CMakeLists.txt for the gtest library
@@ -41,7 +54,8 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 # add the test executable
 add_executable (TestSkeleton
- src/base/time.cpp src/base/time.h src/base/time_test.cpp)
+ src/utils/time.cpp src/utils/time.h src/utils/time_test.cpp)
+
 if(MSVC)
     target_link_libraries (TestSkeleton gtest_main)
 else()

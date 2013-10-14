@@ -1,6 +1,6 @@
 /**
  * @file    time.cpp
- * @ingroup base
+ * @ingroup Utils
  * @brief   Simple time tools.
  *
  * Copyright (c) 2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
@@ -9,12 +9,14 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "time.h"
+#include "utils/time.h"
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
+namespace Utils {
 
 // Get tick in milliseconds
 time_t Time::getTickMs() {
@@ -78,4 +80,6 @@ time_t Time::diff(const time_t aStartTime, const time_t aEndTime) {
 
     return deltaTime;
 }
+
+} // namespace Utils
 

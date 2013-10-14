@@ -11,9 +11,14 @@
 
 #include <cstdio>
 
-#include "base/time.h"
+#include "utils/time.h"
 
+/**
+ * @brief Entry-point of the application, showing how to play with precise time ticks.
+ */
 int main() {
+    using Utils::Time;
+
     time_t startUs = Time::getTickUs();
     // Do something in a few us ...
     time_t endUs   = Time::getTickUs();
