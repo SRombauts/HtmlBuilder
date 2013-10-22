@@ -39,6 +39,13 @@ add_custom_target(cpplint
  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
+# add a cppcheck target to the "all" target
+add_custom_target(cppcheck
+ ALL
+ COMMAND cppcheck -j 4 cppcheck --enable=style,portability,performance,information --quiet --template='{file}:{line}: warning: cppcheck: {message} [{severity}/{id}]' src
+ WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}  
+)
+
 # add a Doxygen target to the "all" target
 add_custom_target(doxygen
  ALL
