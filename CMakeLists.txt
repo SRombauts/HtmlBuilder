@@ -6,16 +6,33 @@
 cmake_minimum_required(VERSION 2.6)
 project(CppSkeleton)
 
+# Define useful variables to handle OS/Compiler differences
 if (MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CCPPLINT_ARG_OUTPUT "--output=vs7")
+    set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    set(CPPLINT_ARG_OUTPUT      "--output=vs7")
+    set(CPPCHECK_ARG_TEMPLATE   "--template=vs")
+    set(DEV_NULL                "NUL")
+    set(SYSTEM_LIBRARIES        "")
     add_definitions (/D_CRT_SECURE_NO_WARNINGS)
 else()
-    set(CCPPLINT_ARG_OUTPUT "--output=eclipse")
+    set(CPPLINT_ARG_OUTPUT      "--output=eclipse")
+    set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
+    set(DEV_NULL                "/dev/null")
+    set(SYSTEM_LIBRARIES        "rt")
 #   add_definitions (-std=c++0x)  # -std=c++11
 endif()
-set(CCPPLINT_ARG_VERBOSE "--verbose=3")
+set(CPPLINT_ARG_VERBOSE "--verbose=3")
+
+# List all sources/headers files
+# used only for cpplint: adding a file still require modifing the CMakeLists.txt
+# so that CMake know that it should rebuild the project (and better practice)
+file(GLOB all_source_files
+    "${PROJECT_SOURCE_DIR}/src/*.cpp"
+)
+
+# All includes are relative to the "src" directory
+include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 # add the application executable
 add_executable(CppSkeleton
@@ -25,32 +42,27 @@ add_executable(CppSkeleton
  src/utils/random.cpp src/utils/random.h
  src/utils/time.cpp src/utils/time.h
  src/utils/utils.h)
-
-if (MSVC)
-    target_link_libraries (CppSkeleton)
-else()
-    target_link_libraries (CppSkeleton rt)
-endif()
+target_link_libraries (CppSkeleton ${SYSTEM_LIBRARIES})
 
 # add a cpplint target to the "all" target
 add_custom_target(cpplint
  ALL
- COMMAND python cpplint.py ${CCPPLINT_ARG_OUTPUT} ${CCPPLINT_ARG_VERBOSE} src/*.* src/*/*.* 
+ COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${all_source_files}
  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 # add a cppcheck target to the "all" target
 add_custom_target(cppcheck
  ALL
- COMMAND cppcheck -j 4 cppcheck --enable=style,portability,performance,information --quiet --template='{file}:{line}: warning: cppcheck: {message} [{severity}/{id}]' src
- WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}  
+ COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
 )
 
+# add a Doxygen target to the "all" target
 if (NOT DEFINED ENV{TRAVIS})
-    # add a Doxygen target to the "all" target
+    # if not runing on a Travis CI Virtual Machine
     add_custom_target(doxygen
      ALL
-     COMMAND doxygen Doxyfile > /dev/null 
+     COMMAND doxygen Doxyfile > ${DEV_NULL}
      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 else()
@@ -63,17 +75,10 @@ endif()
 add_subdirectory (googletest) 
 include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
 
-include_directories ("${PROJECT_SOURCE_DIR}/src")
-
 # add the test executable
 add_executable (TestSkeleton
  src/utils/time.cpp src/utils/time.h src/utils/time_test.cpp)
-
-if (MSVC)
-    target_link_libraries (TestSkeleton gtest_main)
-else()
-    target_link_libraries (TestSkeleton rt gtest_main)
-endif()
+target_link_libraries (TestSkeleton gtest_main ${SYSTEM_LIBRARIES})
 
 # add a "test" target:
 enable_testing()
