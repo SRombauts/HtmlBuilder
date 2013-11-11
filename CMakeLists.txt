@@ -28,6 +28,7 @@ set(CPPLINT_ARG_VERBOSE "--verbose=3")
 # used only for cpplint: adding a file still require modifing the CMakeLists.txt
 # so that CMake know that it should rebuild the project (and better practice)
 file(GLOB all_source_files
+    "${PROJECT_SOURCE_DIR}/src/*.h"
     "${PROJECT_SOURCE_DIR}/src/*.cpp"
 )
 
