@@ -15,15 +15,17 @@
 
 #include "gtest/gtest.h"
 
+/// Test Random::genChar() random character generator
 TEST(Random, genChar) {
     EXPECT_NE(Utils::Random::genChar(), Utils::Random::genChar());
 }
 
+#define RANDOM_TEST_NB_CHAR 10 ///< Size of random string
+/// Test RandomgenString() random string generator
 TEST(Random, genString) {
-    #define NB_CHAR 10
-    char str1[NB_CHAR+1] = "";
-    char str2[NB_CHAR+1] = "";
-    Utils::Random::genString(str1, NB_CHAR);
-    Utils::Random::genString(str2, NB_CHAR);
+    char str1[RANDOM_TEST_NB_CHAR+1] = "";
+    char str2[RANDOM_TEST_NB_CHAR+1] = "";
+    Utils::Random::genString(str1, RANDOM_TEST_NB_CHAR);
+    Utils::Random::genString(str2, RANDOM_TEST_NB_CHAR);
     EXPECT_STRNE(str1, str2);
 }

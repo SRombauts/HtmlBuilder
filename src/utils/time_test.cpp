@@ -15,6 +15,7 @@
 
 #include "gtest/gtest.h"
 
+/// Test Time::diff() utility
 TEST(Time, diff) {
     using Utils::Time;
     EXPECT_EQ(0,            Time::diff(0, 0));

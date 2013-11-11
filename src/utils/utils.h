@@ -28,13 +28,18 @@ namespace Utils {
 
 #include <cstddef>
 
-// A macro to disallow the copy constructor and operator= functions
-// This should be used in the private: declarations for a class
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-    TypeName(const TypeName&);               \
+/**
+ * @brief A macro to disallow the copy constructor and operator= functions.
+ *
+ * This should be used in the private: declarations for a class
+ *
+ * @param[in] TypeName  Class name to protect
+ */
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)  \
+    TypeName(const TypeName&);              \
     void operator=(const TypeName&)
 
-// A macro to enable the use of the nullptr keyword (NULL on older compiler)
+/// A macro to enable the use of the nullptr keyword (NULL on older compiler)
 #ifdef _MSC_VER
 #if _MSC_VER < 1600
 #define nullptr NULL

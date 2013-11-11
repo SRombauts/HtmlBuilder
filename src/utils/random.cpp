@@ -57,7 +57,7 @@ Random::Init::Init() {
     std::srand(std::time(0));
 }
 
-// Static initialization of the random generator, calling Init() before main()
+/// Static initialization of the random generator, calling Init() before main()
 static Random::Init _mInit;
 
 
