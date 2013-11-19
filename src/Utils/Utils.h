@@ -1,5 +1,5 @@
 /**
- * @file    utils.h
+ * @file    Utils.h
  * @ingroup Utils
  * @brief   Shared utility macros and functions.
  *
@@ -13,7 +13,7 @@
  * @brief     Shared utilities.
  */
 /**
- * @dir     utils Utils
+ * @dir     Utils Utils
  * @brief   Shared utilities.
  * @ingroup Utils Utils
  */
@@ -39,14 +39,36 @@ namespace Utils {
     TypeName(const TypeName&);              \
     void operator=(const TypeName&)
 
-/// A macro to enable the use of the nullptr keyword (NULL on older compiler)
 #ifdef _MSC_VER
 #if _MSC_VER < 1600
+/// A macro to enable the use of the nullptr keyword (NULL on older MSVC compilers, as they does not accept "nullptr_t")
 #define nullptr NULL
 #endif
 #else
 #ifndef __GXX_EXPERIMENTAL_CXX0X__
-#define nullptr NULL
+/**
+ * @brief nullptr_t is the type of the null pointer literal, nullptr.
+*/
+class nullptr_t {
+public:
+    template<typename T>
+    inline operator T* () const {       ///< convertible to any type of null non-member pointer...
+        return 0;
+    }
+
+    template<typename C, typename T>
+    inline operator T C::* () const {   ///< convertible to any type of null member pointer...
+        return 0;
+    }
+
+private:
+    void operator&() const;  ///< Can't take address of nullptr NOLINT
+};
+
+/**
+ * @brief Better way to enable nullptr on older GCC/Clang compilers
+*/
+const nullptr_t nullptr = {};
 #endif
 #endif
 

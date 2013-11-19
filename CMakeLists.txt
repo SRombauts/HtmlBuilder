@@ -22,7 +22,7 @@ else()
     set(SYSTEM_LIBRARIES        "rt")
 #   add_definitions (-std=c++0x)  # -std=c++11
 endif()
-set(CPPLINT_ARG_VERBOSE "--verbose=3")
+set(CPPLINT_ARG_VERBOSE "--verbose=1")
 
 # List all sources/headers files
 # used only for cpplint: adding a file still require modifing the CMakeLists.txt
@@ -37,12 +37,12 @@ include_directories ("${PROJECT_SOURCE_DIR}/src")
 
 # add the application executable
 add_executable(CppSkeleton
- src/main.cpp
- src/utils/datetime.cpp src/utils/datetime.h
- src/utils/measure.cpp src/utils/measure.h
- src/utils/random.cpp src/utils/random.h
- src/utils/time.cpp src/utils/time.h
- src/utils/utils.h)
+ src/Main.cpp
+ src/Utils/DateTime.cpp src/Utils/DateTime.h
+ src/Utils/Measure.cpp src/Utils/Measure.h
+ src/Utils/Random.cpp src/Utils/Random.h
+ src/Utils/Time.cpp src/Utils/Time.h
+ src/Utils/Utils.h)
 target_link_libraries (CppSkeleton ${SYSTEM_LIBRARIES})
 
 # add a cpplint target to the "all" target
@@ -78,7 +78,7 @@ include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
 
 # add the test executable
 add_executable (TestSkeleton
- src/utils/time.cpp src/utils/time.h src/utils/time_test.cpp)
+ src/Utils/Time.cpp src/Utils/Time.h src/Utils/Time_test.cpp)
 target_link_libraries (TestSkeleton gtest_main ${SYSTEM_LIBRARIES})
 
 # add a "test" target:

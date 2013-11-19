@@ -1,5 +1,5 @@
 /**
- * @file    time.cpp
+ * @file    Time.cpp
  * @ingroup Utils
  * @brief   Simple time tools.
  *
@@ -9,7 +9,7 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "utils/time.h"
+#include "Utils/Time.h"
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN

@@ -1,5 +1,5 @@
 /**
- * @file    measure.cpp
+ * @file    Measure.cpp
  * @ingroup Utils
  * @brief   Encapsulate a microsecond time measurement.
  *
@@ -9,8 +9,8 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "utils/measure.h"
-#include "utils/time.h"
+#include "Utils/Measure.h"
+#include "Utils/Time.h"
 
 namespace Utils {
 

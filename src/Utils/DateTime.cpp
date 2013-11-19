@@ -1,5 +1,5 @@
 /**
- * @file    datetime.cpp
+ * @file    DateTime.cpp
  * @ingroup Utils
  * @brief   Current date and time precise to the millisecond.
  *
@@ -9,7 +9,7 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "datetime.h"
+#include "Utils/DateTime.h"
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN

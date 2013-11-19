@@ -1,5 +1,5 @@
 /**
- * @file    measure.h
+ * @file    Measure.h
  * @ingroup Utils
  * @brief   Encapsulate a microsecond time measurement.
  *

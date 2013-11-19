@@ -1,5 +1,5 @@
 /**
- * @file    main.cpp
+ * @file    Main.cpp
  * @ingroup CppSkeleton
  * @brief   A simple skeleton for C++ development with CMake and Google Test.
  *
@@ -11,7 +11,7 @@
 
 #include <cstdio>
 
-#include "utils/time.h"
+#include "Utils/Time.h"
 
 /**
  * @brief Entry-point of the application, showing how to play with precise time ticks.

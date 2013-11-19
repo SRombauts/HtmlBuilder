@@ -1,5 +1,5 @@
 /**
- * @file    random_test.cpp
+ * @file    Random_test.cpp
  * @ingroup Utils
  * @brief   Generating random data.
  *
@@ -9,7 +9,7 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "utils/random.h"
+#include "Utils/Random.h"
 
 #include <limits>
 

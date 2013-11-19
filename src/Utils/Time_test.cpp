@@ -1,5 +1,5 @@
 /**
- * @file    time_test.cpp
+ * @file    Time_test.cpp
  * @ingroup Utils
  * @brief   Simple time tools.
  *
@@ -9,7 +9,7 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
-#include "time.h"
+#include "Utils/Time.h"
 
 #include <limits>
 

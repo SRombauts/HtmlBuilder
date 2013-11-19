@@ -1,5 +1,5 @@
 /**
- * @file    datetime.h
+ * @file    DateTime.h
  * @ingroup Utils
  * @brief   Current date and time precise to the millisecond.
  *

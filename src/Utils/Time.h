@@ -1,5 +1,5 @@
 /**
- * @file    time.h
+ * @file    Time.h
  * @ingroup Utils
  * @brief   Tools for precise time measurement.
  *

@@ -1,5 +1,5 @@
 /**
- * @file    random.h
+ * @file    Random.h
  * @ingroup Utils
  * @brief   Generating random data.
  *
