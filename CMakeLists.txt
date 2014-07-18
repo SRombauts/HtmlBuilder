@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
@@ -8,20 +8,23 @@ project(CppSkeleton)
 
 # Define useful variables to handle OS/Compiler differences
 if (MSVC)
+    # Flags for linking with multithread static C and C++ runtime
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     set(CPPLINT_ARG_OUTPUT      "--output=vs7")
     set(CPPCHECK_ARG_TEMPLATE   "--template=vs")
     set(DEV_NULL                "NUL")
     set(SYSTEM_LIBRARIES        "")
-    add_definitions (/D_CRT_SECURE_NO_WARNINGS)
-else()
+    add_definitions(/D_CRT_SECURE_NO_WARNINGS)
+else (MSVC)
+    message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+
     set(CPPLINT_ARG_OUTPUT      "--output=eclipse")
     set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
     set(DEV_NULL                "/dev/null")
     set(SYSTEM_LIBRARIES        "rt")
-#   add_definitions (-std=c++0x)  # -std=c++11
-endif()
+#   add_definitions(-std=c++0x)  # -std=c++11
+endif (MSVC)
 set(CPPLINT_ARG_VERBOSE "--verbose=1")
 
 # List all sources/headers files
@@ -33,7 +36,7 @@ file(GLOB all_source_files
 )
 
 # All includes are relative to the "src" directory
-include_directories ("${PROJECT_SOURCE_DIR}/src")
+include_directories("${PROJECT_SOURCE_DIR}/src")
 
 # add the application executable
 add_executable(CppSkeleton
@@ -43,50 +46,73 @@ add_executable(CppSkeleton
  src/Utils/Random.cpp src/Utils/Random.h
  src/Utils/Time.cpp src/Utils/Time.h
  src/Utils/Utils.h)
-target_link_libraries (CppSkeleton ${SYSTEM_LIBRARIES})
+target_link_libraries(CppSkeleton ${SYSTEM_LIBRARIES})
 
-# add a cpplint target to the "all" target
-add_custom_target(cpplint
- ALL
- COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${all_source_files}
- WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
 
-# add a cppcheck target to the "all" target
-add_custom_target(cppcheck
- ALL
- COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
-)
+# Optional additional targets:
 
-# add a Doxygen target to the "all" target
-if (NOT DEFINED ENV{TRAVIS})
-    # if not runing on a Travis CI Virtual Machine
-    add_custom_target(doxygen
+option(CPPSKELETON_RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." ON)
+if (CPPSKELETON_RUN_CPPLINT)
+    # add a cpplint target to the "all" target
+    add_custom_target(cpplint
      ALL
-     COMMAND doxygen Doxyfile > ${DEV_NULL}
+     COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${all_source_files}
      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-else()
-    # but no Doxygen under Travis CI: too costly and no real benefit
-    message("no Doxygen target when TRAVIS is defined")
-endif()
+else (CPPSKELETON_RUN_CPPLINT)
+    message(STATUS "CPPSKELETON_RUN_CPPLINT OFF")
+endif (CPPSKELETON_RUN_CPPLINT)
+
+option(CPPSKELETON_RUN_CPPCHECK "Run cppcheck C++ static analysis tool." ON)
+if (CPPSKELETON_RUN_CPPCHECK)
+    # add a cppcheck target to the "all" target
+    add_custom_target(cppcheck
+     ALL
+     COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
+    )
+else (CPPSKELETON_RUN_CPPCHECK)
+    message(STATUS "CPPSKELETON_RUN_CPPCHECK OFF")
+endif (CPPSKELETON_RUN_CPPCHECK)
+
+option(CPPSKELETON_RUN_DOXYGEN "Run Doxygen C++ documentation tool." ON)
+if (CPPSKELETON_RUN_DOXYGEN)
+    # add a Doxygen target to the "all" target
+    if (NOT DEFINED ENV{TRAVIS})
+        # if not runing on a Travis CI Virtual Machine
+        add_custom_target(doxygen
+         ALL
+         COMMAND doxygen Doxyfile > ${DEV_NULL}
+         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        )
+    else()
+        # but no Doxygen under Travis CI: too costly and no real benefit
+        message("no Doxygen target when TRAVIS is defined")
+    endif()
+else (CPPSKELETON_RUN_DOXYGEN)
+    message(STATUS "CPPSKELETON_RUN_DOXYGEN OFF")
+endif (CPPSKELETON_RUN_DOXYGEN)
 
 
-# add the subdirectory containing the CMakeLists.txt for the gtest library
-add_subdirectory (googletest) 
-include_directories ("${PROJECT_SOURCE_DIR}/googletest/include")
+option(CPPSKELETON_RUN_TESTS "Run Doxygen C++ documentation tool." ON)
+if (CPPSKELETON_RUN_TESTS)
+    # add the subdirectory containing the CMakeLists.txt for the gtest library
+    add_subdirectory(googletest) 
+    include_directories("${PROJECT_SOURCE_DIR}/googletest/include")
 
-# add the test executable
-add_executable (TestSkeleton
- src/Utils/Time.cpp src/Utils/Time.h src/Utils/Time_test.cpp)
-target_link_libraries (TestSkeleton gtest_main ${SYSTEM_LIBRARIES})
+    # add the test executable
+    add_executable(TestSkeleton
+     src/Utils/Time.cpp src/Utils/Time.h src/Utils/Time_test.cpp)
+    target_link_libraries(TestSkeleton gtest_main ${SYSTEM_LIBRARIES})
 
-# add a "test" target:
-enable_testing()
+    # add a "test" target:
+    enable_testing()
 
-# does the application runs
-add_test (ApplicationRuns CppSkeleton)
+    # does the application runs
+    add_test(ApplicationRuns CppSkeleton)
 
-# does the tests pass
-add_test (TestsPass TestSkeleton)
+    # does the tests pass
+    add_test(TestsPass TestSkeleton)
+else (CPPSKELETON_RUN_TESTS)
+    message(STATUS "CPPSKELETON_RUN_TESTS OFF")
+endif (CPPSKELETON_RUN_TESTS)
 
