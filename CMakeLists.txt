@@ -1,10 +1,17 @@
-# Copyright (c) 2014 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 2.6)
 project(CppSkeleton)
+
+# Print some standard CMake variables
+message(STATUS "CMAKE_SYSTEM_NAME/_VERSION      '${CMAKE_SYSTEM_NAME}' '${CMAKE_SYSTEM_VERSION}'")
+message(STATUS "CMAKE_CXX_COMPILER_ID/_VERSION  '${CMAKE_CXX_COMPILER_ID}' '${CMAKE_CXX_COMPILER_VERSION}'")
+if (NOT MSVC)
+    message(STATUS "CMAKE_BUILD_TYPE                '${CMAKE_BUILD_TYPE}'")
+endif (NOT MSVC)
 
 # Define useful variables to handle OS/Compiler differences
 if (MSVC)
