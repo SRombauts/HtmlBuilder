@@ -5,7 +5,7 @@ cpp-skeleton
 
 A simple skeleton for C++ development with CMake and Google Test.
 
-Copyright (c) 2013 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Building & testing with CMake
 
