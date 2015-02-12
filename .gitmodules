@@ -1,3 +1,6 @@
 [submodule "googletest"]
 	path = googletest
 	url = https://git.chromium.org/git/external/googletest.git
+[submodule "cpplint"]
+	path = cpplint
+	url = https://github.com/SRombauts/cpplint.git

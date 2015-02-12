@@ -11,6 +11,7 @@
 #pragma once
 
 #include <cstddef>  // size_t
+#include <cstdint>  // size_t
 
 namespace Utils {
 
@@ -29,7 +30,7 @@ public:
      *
      * @return A random printable character.
      */
-    static unsigned long gen(unsigned long aMax);
+    static uint32_t gen(uint32_t aMax);
 
     /**
      * @brief Generate an integer between aMin and aMax (<= RAND_MAX).
@@ -39,7 +40,7 @@ public:
      *
      * @return A random printable character.
      */
-    static unsigned long gen(unsigned long aMin, unsigned long aMax);
+    static uint32_t gen(uint32_t aMin, uint32_t aMax);
 
     /**
      * @brief Generate a printable alphanumeric character.

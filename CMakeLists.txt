@@ -30,29 +30,26 @@ else (MSVC)
     set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
     set(DEV_NULL                "/dev/null")
     set(SYSTEM_LIBRARIES        "rt")
-#   add_definitions(-std=c++0x)  # -std=c++11
+    add_definitions(-std=c++0x)  # -std=c++11
 endif (MSVC)
+set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 set(CPPLINT_ARG_VERBOSE "--verbose=1")
 
 # List all sources/headers files
-# used only for cpplint: adding a file still require modifing the CMakeLists.txt
-# so that CMake know that it should rebuild the project (and better practice)
-file(GLOB all_source_files
-    "${PROJECT_SOURCE_DIR}/src/*.h"
-    "${PROJECT_SOURCE_DIR}/src/*.cpp"
+set(all_source_files
+ ${CMAKE_SOURCE_DIR}/src/Main.cpp
+ ${CMAKE_SOURCE_DIR}/src/Utils/DateTime.cpp src/Utils/DateTime.h
+ ${CMAKE_SOURCE_DIR}/src/Utils/Measure.cpp src/Utils/Measure.h
+ ${CMAKE_SOURCE_DIR}/src/Utils/Random.cpp src/Utils/Random.h
+ ${CMAKE_SOURCE_DIR}/src/Utils/Time.cpp src/Utils/Time.h
+ ${CMAKE_SOURCE_DIR}/src/Utils/Utils.h
 )
 
 # All includes are relative to the "src" directory
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
 # add the application executable
-add_executable(CppSkeleton
- src/Main.cpp
- src/Utils/DateTime.cpp src/Utils/DateTime.h
- src/Utils/Measure.cpp src/Utils/Measure.h
- src/Utils/Random.cpp src/Utils/Random.h
- src/Utils/Time.cpp src/Utils/Time.h
- src/Utils/Utils.h)
+add_executable(CppSkeleton ${all_source_files})
 target_link_libraries(CppSkeleton ${SYSTEM_LIBRARIES})
 
 
@@ -63,8 +60,7 @@ if (CPPSKELETON_RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(cpplint
      ALL
-     COMMAND python cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_VERBOSE} ${all_source_files}
-     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${all_source_files}
     )
 else (CPPSKELETON_RUN_CPPLINT)
     message(STATUS "CPPSKELETON_RUN_CPPLINT OFF")

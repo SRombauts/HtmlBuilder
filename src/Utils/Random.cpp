@@ -16,18 +16,19 @@
 #include <cstdlib>  // rand(), srand()
 #include <ctime>    // time()
 #include <cassert>  // assert()
+#include <cstdint>  // uint32_t
 
 namespace Utils {
 
 // Generate an integer between 0 and aMax (<= RAND_MAX).
-unsigned long Random::gen(unsigned long aMax) {
+uint32_t Random::gen(uint32_t aMax) {
     assert(aMax > 0);
     assert(aMax < RAND_MAX);
     return (std::rand() % (aMax + 1));
 }
 
 // Generate an integer between aMin and aMax (<= RAND_MAX).
-unsigned long Random::gen(unsigned long aMin, unsigned long aMax) {
+uint32_t Random::gen(uint32_t aMin, uint32_t aMax) {
     assert(aMax > aMin);
     assert((aMax - aMin) < RAND_MAX);
     return (aMin + (std::rand() % ((aMax - aMin) + 1)));

@@ -50,7 +50,7 @@ void DateTime::make(void) {
 #else
     struct timeval now;
     gettimeofday(&now, NULL);
-    struct tm* timeinfo = localtime(&now.tv_sec);
+    struct tm* timeinfo = localtime(&now.tv_sec); // NOLINT(runtime/threadsafe_fn)
 
     year    = timeinfo->tm_year + 1900;
     month   = timeinfo->tm_mon + 1;
