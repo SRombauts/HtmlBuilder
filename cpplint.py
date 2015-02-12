@@ -622,9 +622,11 @@ class _CppLintState(object):
 
   def PrintErrorCounts(self):
     """Print a summary of errors by category, and the total."""
+    # SRombauts: added a "cpplint:" prefix
     for category, count in self.errors_by_category.iteritems():
       sys.stderr.write('cpplint: Category \'%s\' errors found: %d\n' %
                        (category, count))
+    # SRombauts: "cpplint:" prefix and error message only when at least one error
     if 0 < self.error_count:
       sys.stderr.write('cpplint: Total errors found: %d\n' % self.error_count)
 
@@ -880,6 +882,7 @@ def Error(filename, linenum, category, confidence, message):
       sys.stderr.write('%s(%s):  %s  [%s] [%d]\n' % (
           filename, linenum, message, category, confidence))
     elif _cpplint_state.output_format == 'eclipse':
+      # SRombauts: confident 5==error/4==warning/3,2,1==note
       if confidence == 5:
         sys.stderr.write('%s:%s: error: %s  [%s] [%d]\n' % (
             filename, linenum, message, category, confidence))
@@ -894,7 +897,7 @@ def Error(filename, linenum, category, confidence, message):
           filename, linenum, message, category, confidence))
 
 
-# Matches standard C++ escape esequences per 2.13.2.3 of the C++ standard.
+# Matches standard C++ escape sequences per 2.13.2.3 of the C++ standard.
 _RE_PATTERN_CLEANSE_LINE_ESCAPES = re.compile(
     r'\\([abfnrtv?"\\\']|\d+|x[0-9a-fA-F]+)')
 # Matches strings.  Escape codes should already be removed by ESCAPES.
@@ -1117,6 +1120,7 @@ def CheckForCopyright(filename, lines, error):
           'No copyright message found.  '
           'You should have a line: "Copyright [year] <Copyright Owner>"')
 
+# SRombauts: added a rule for Doxygen file headers
 def CheckForFilename(filename, lines, error):
   """Logs an error if the Filename does not appear at the top of the file."""
 
@@ -1830,9 +1834,10 @@ def CheckForNonStandardConstructs(filename, clean_lines, linenum,
   # For the rest, work with both comments and strings removed.
   line = clean_lines.elided[linenum]
 
+  # SRombauts: switched to standard types from <cstdin> (int8 -> int8_t)
   if Search(r'\b(const|volatile|void|char|short|int|long'
             r'|float|double|signed|unsigned'
-            r'|schar|u?int8|u?int16|u?int32|u?int64)'
+            r'|schar|u?int8_t|u?int16_t|u?int32_t|u?int64_t)'
             r'\s+(register|static|extern|typedef)\b',
             line):
     error(filename, linenum, 'build/storage_class', 5,
@@ -2330,14 +2335,12 @@ def CheckSpacing(filename, clean_lines, linenum, nesting_state, error):
     # Comparisons made explicit for clarity -- pylint: disable-msg=C6403
     if (line.count('"', 0, commentpos) -
         line.count('\\"', 0, commentpos)) % 2 == 0:   # not in quotes
-      # Allow one space for new scopes, two spaces otherwise:
+      # SRombauts: one space is enough
       if (not Match(r'^\s*{ //', line) and
-          ((commentpos >= 1 and
-            line[commentpos-1] not in string.whitespace) or
-           (commentpos >= 2 and
-            line[commentpos-2] not in string.whitespace))):
-        error(filename, linenum, 'whitespace/comments', 2,
-              'At least two spaces is best between code and comments')
+          (commentpos >= 1 and
+           line[commentpos-1] not in string.whitespace)):
+        error(filename, linenum, 'whitespace/comments', 3,
+              'At least one space is best between code and comments')
       # There should always be a space between the // (or /// or //! or //!<) and the comment
       commentend = commentpos + 2
       if commentend < len(line) and not line[commentend] == ' ':
@@ -2846,6 +2849,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
   line = raw_lines[linenum]
 
   if line.find('\t') != -1:
+    # SRombauts: never allow tabs
     error(filename, linenum, 'whitespace/tab', 5,
           'Tab found; use spaces indents only')
 
@@ -2869,6 +2873,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
     error(filename, linenum, 'whitespace/end_of_line', 4,
           'Line ends in whitespace.  Consider deleting these extra spaces.')
   # There are certain situations we allow one space, notably for labels
+  # SRombauts: switched to 4 spaces indent
   elif ((initial_spaces in (1,2,3,5,6,7)) and
         not Match(r'\s*\w+\s*:\s*$', cleansed_line)):
     error(filename, linenum, 'whitespace/indent', 3,
@@ -3244,9 +3249,10 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
   # I just try to capture the most common basic types, though there are more.
   # Parameterless conversion functions, such as bool(), are allowed as they are
   # probably a member operator declaration or default constructor.
+  # SRombauts: switched to standard types from <cstdin> (int8 -> int8_t)
   match = Search(
       r'(\bnew\s+)?\b'  # Grab 'new' operator, if it's there
-      r'(int|float|double|bool|char|int32|uint32|int64|uint64)\([^)]', line)
+      r'(int|float|double|bool|char|int32_t|uint32_t|int64_t|uint64_t)\([^)]', line)
   if match:
     # gMock methods are defined using some variant of MOCK_METHODx(name, type)
     # where type may be float(), int(string), etc.  Without context they are
@@ -3270,9 +3276,10 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
               'Use static_cast<%s>(...) instead' %
               match.group(2))
 
+  # SRombauts: switched to standard types from <cstdin> (int8 -> int8_t)
   CheckCStyleCast(filename, linenum, line, clean_lines.raw_lines[linenum],
                   'static_cast',
-                  r'\((int|float|double|bool|char|u?int(16|32|64))\)', error)
+                  r'\((int|float|double|bool|char|u?int(16|32|64)_t)\)', error)
 
   # This doesn't catch all cases. Consider (const char * const)"hello".
   #
@@ -3338,10 +3345,11 @@ def CheckLanguage(filename, clean_lines, linenum, file_extension, include_state,
       error(filename, linenum, 'runtime/int', 4,
             'Use "unsigned short" for ports, not "short"')
   else:
+    # SRombauts: switched to standard types from <cstdin> (int8 -> int8_t)
     match = Search(r'\b(short|long(?! +double)|long long)\b', line)
     if match:
-      error(filename, linenum, 'runtime/int', 2,
-            'Use int16/int64/etc, rather than the C type %s' % match.group(1))
+      error(filename, linenum, 'runtime/int', 3,
+            'Use int8_t/int16_t/int32_t/int64_t/etc, rather than the C type %s' % match.group(1))
 
   # When snprintf is used, the second argument shouldn't be a literal.
   match = Search(r'snprintf\s*\(([^,]*),\s*([0-9]*)\s*,', line)
@@ -3944,8 +3952,9 @@ def ProcessFile(filename, vlevel, extra_check_functions=[]):
         carriage_return_found = True
 
   except IOError:
-    sys.stderr.write(
-        "Skipping input '%s': Can't open for reading\n" % filename)
+    # SRombauts: do not complain for directory in the file list
+    #sys.stderr.write(
+    #    "Skipping input '%s': Can't open for reading\n" % filename)
     return
 
   # Note, if no dot is found, this will give the entire filename as the ext.
@@ -3955,18 +3964,21 @@ def ProcessFile(filename, vlevel, extra_check_functions=[]):
   # should rely on the extension.
   if (filename != '-' and file_extension != 'cc' and file_extension != 'h'
       and file_extension != 'cpp'):
+    # SRombauts: do not complain for non C++ files
     #sys.stderr.write('cpplint:0: Ignoring %s; not a .cc or .h file\n' % filename)
     None
   else:
     ProcessFileData(filename, file_extension, lines, Error,
                     extra_check_functions)
     if carriage_return_found:
+      # SRombauts: never use Windows endline
       # Outputting only one error for potentially
       # several lines.
       Error(filename, carriage_return_found, 'whitespace/newline', 5,
             'One or more carriage-return \\r (^M) (Windows endline) found; '
             'Use only UNIX endline \\n')
 
+  # SRombauts: do not show progress
   #sys.stderr.write('cpplint:0: Done processing %s\n' % filename)
 
 
