@@ -1,5 +1,8 @@
+# Copyright (c) 2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+
 language: cpp
 
+# compilers to add to build matrix
 compiler:
   - gcc
   - clang
@@ -8,10 +11,14 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq cppcheck
  
+# scripts to run before build
 before_script:
   - mkdir build
   - cd build
   - cmake ..
 
-script: make && make test
+# build
+script:
+  - make
+  - make test
 

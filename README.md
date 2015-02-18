@@ -1,7 +1,8 @@
 cpp-skeleton
 ------------
 
-![cpp-skeleton build status](https://api.travis-ci.org/SRombauts/cpp-skeleton.png "cpp-skeleton build status")
+[![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/cpp-skeleton.svg)](https://travis-ci.org/SRombauts/cpp-skeleton "Travis CI Linux Build Status")
+[![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/cpp-skeleton?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/cpp-skeleton "AppVeyor Windows Build status")
 
 A simple skeleton for C++ development with CMake and Google Test.
 
@@ -26,12 +27,12 @@ cmake --build . # make
 ctest .         # make test
 ```
 
-### Debug build
+### Debug build for Unix Makefiles
 
 ```bash
 mkdir Debug
 cd Debug
-cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+cmake .. -DCMAKE_BUILD_TYPE=Debug   # -G "Unix Makefiles"
 cmake --build . # make
 ctest .         # make test
 ```
@@ -41,7 +42,7 @@ ctest .         # make test
 ```bash
 mkdir Release
 cd Release
-cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release  # -G "Unix Makefiles"
 cmake --build . # make
 ctest .         # make test
 ```
