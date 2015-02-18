@@ -41,7 +41,7 @@ char Random::genChar() {
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz";
 
-    return alphanum[Random::gen(sizeof(alphanum) - 1)];
+    return alphanum[Random::gen(static_cast<uint32_t>(sizeof(alphanum) - 1))];
 }
 
 // Generate a printable alphanumeric string.
@@ -55,7 +55,7 @@ void Random::genString(char* str, size_t len) {
 
 // Initialize the random generator with the current time
 Random::Init::Init() {
-    std::srand(std::time(0));
+    std::srand(static_cast<unsigned int>(std::time(0)));
 }
 
 /// Static initialization of the random generator, calling Init() before main()

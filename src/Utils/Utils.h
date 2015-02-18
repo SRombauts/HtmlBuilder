@@ -49,7 +49,7 @@ namespace Utils {
 /**
  * @brief nullptr_t is the type of the null pointer literal, nullptr.
 */
-class nullptr_t {
+class nullptr_t {   // NOLINT
 public:
     template<typename T>
     inline operator T* () const {       ///< convertible to any type of null non-member pointer...
