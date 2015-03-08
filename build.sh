@@ -19,5 +19,5 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug
 # Build (ie 'make')
 cmake --build .
 
-# Run unit-tests
+# Run unit-tests (ie 'make test')
 ctest .

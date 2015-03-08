@@ -1,4 +1,4 @@
-# Copyright (c) 2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 # build format
 version: "{build}"
@@ -21,3 +21,4 @@ before_build:
 # build
 build_script:
   - cmake --build .
+  - ctest .

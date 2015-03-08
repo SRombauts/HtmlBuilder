@@ -1,4 +1,4 @@
-# Copyright (c) 2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 language: cpp
 
@@ -19,6 +19,6 @@ before_script:
 
 # build
 script:
-  - make
-  - make test
+  - cmake --build .
+  - ctest .
 

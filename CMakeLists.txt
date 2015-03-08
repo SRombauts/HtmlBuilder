@@ -15,7 +15,7 @@ endif (NOT MSVC)
 
 # Define useful variables to handle OS/Compiler differences
 if (MSVC)
-    # Flags for linking with multithread static C and C++ runtime
+    # Flags for linking with multithread static C++ runtime
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     set(CPPLINT_ARG_OUTPUT      "--output=vs7")
@@ -55,7 +55,7 @@ else (MSVC)
     endif (CMAKE_COMPILER_IS_GNUCXX)
 endif (MSVC)
 set(CPPLINT_ARG_LINELENGTH "--linelength=120")
-set(CPPLINT_ARG_VERBOSE "--verbose=1")
+set(CPPLINT_ARG_VERBOSE    "--verbose=1")
 
 # List all sources/headers files
 set(all_source_files
