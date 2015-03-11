@@ -5,13 +5,14 @@
 mkdir build
 cd build
 
-# Generate a Visual Studio solution for latest version found
-cmake .. @REM -G "Visual Studio 10"
+@REM Generate a Visual Studio solution for latest version found
+@REM cmake .. -G "Visual Studio 12"
+cmake ..
 
-# Build default configuration (ie 'Debug')
+@REM Build default configuration (ie 'Debug')
 cmake --build .
 
-# Run unit-tests (ie 'make test')
+@REM Run unit-tests (ie 'make test')
 ctest .
 
 cd ..

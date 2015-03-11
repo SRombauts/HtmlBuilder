@@ -5,20 +5,21 @@ build
 CppSkeleton
 TestSkeleton
 
-CMakeCache.txt
 CMakeFiles
+CMakeCache.txt
 *.cmake
 *.dir
 Testing/
 
 Makefile
+*.sln
 *.ncb
 *.suo
 *.user
-*sdf
 *.vc*
+*sdf
+*ipch
 *~
 doc
 core
-*ipch
 .settings/
