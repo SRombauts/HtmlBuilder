@@ -120,7 +120,7 @@ else (CPPSKELETON_RUN_DOXYGEN)
 endif (CPPSKELETON_RUN_DOXYGEN)
 
 
-option(CPPSKELETON_RUN_TESTS "Run Doxygen C++ documentation tool." ON)
+option(CPPSKELETON_RUN_TESTS "Run gtest unit-test suite." ON)
 if (CPPSKELETON_RUN_TESTS)
     # add the subdirectory containing the CMakeLists.txt for the gtest library
     add_subdirectory(googletest) 
