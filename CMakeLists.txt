@@ -95,7 +95,7 @@ if (CPPSKELETON_RUN_CPPCHECK)
         # add a cppcheck target to the "all" target
         add_custom_target(cppcheck
          ALL
-         COMMAND cppcheck -j 4 cppcheck --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
+         COMMAND cppcheck -j 4 --enable=style --quiet ${CPPCHECK_ARG_TEMPLATE} ${PROJECT_SOURCE_DIR}/src
         )
     else (CPPCHECK_EXECUTABLE)
         message(STATUS "Could NOT find cppcheck")
