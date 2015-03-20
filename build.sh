@@ -20,4 +20,4 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug
 cmake --build .
 
 # Run unit-tests (ie 'make test')
-ctest .
+ctest --output-on-failure

@@ -1,11 +1,13 @@
-# Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2013-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 
 # build format
 version: "{build}"
 
 # scripts that run after cloning repository
+# NOTE : not updating submodule as cloning googletest does not work on AppVeyor
 install:
-  - git submodule update --init --recursive
+  - git submodule update --init cpplint
+# - git submodule update --init googletest
 
 # configurations to add to build matrix
 configuration:
@@ -13,12 +15,13 @@ configuration:
   - Release
  
 # scripts to run before build
+# NOTE : no unit tests as cloning googletest does not work on AppVeyor
 before_build:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DCPPSKELETON_RUN_TESTS=OFF ..
 
-# build
+# build app
 build_script:
   - cmake --build .
-  - ctest .
+# - ctest --output-on-failure
