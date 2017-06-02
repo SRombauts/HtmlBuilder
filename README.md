@@ -10,14 +10,14 @@ Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Building & testing with CMake
 
-### Get Google Test submodule
+### Get Google Test submodule
 
 ```bash
 git submodule init
 git submodule update
 ```
 
-### Typical generic build (see also "build.bat" or "./build.sh")
+### Typical generic build (see also "build.bat" or "./build.sh")
 
 ```bash
 mkdir build
@@ -27,7 +27,7 @@ cmake --build . # make
 ctest .         # make test
 ```
 
-### Debug build for Unix Makefiles
+### Debug build for Unix Makefiles
 
 ```bash
 mkdir Debug
@@ -37,7 +37,7 @@ cmake --build . # make
 ctest .         # make test
 ```
 
-### Release build
+### Release build
 
 ```bash
 mkdir Release
@@ -47,7 +47,7 @@ cmake --build . # make
 ctest .         # make test
 ```
 
-### Continuous Integration
+### Continuous Integration
 
 This project is continuously tested under Ubuntu Linux with the gcc and clang compilers
 using the Travis CI community service with the above CMake building and testing procedure.
@@ -57,4 +57,3 @@ using the AppVeyor countinuous integration service.
 Detailed results can be seen online:
  - https://travis-ci.org/SRombauts/HtmlBuilder
  - https://ci.appveyor.com/project/SbastienRombauts/HtmlBuilder
-
