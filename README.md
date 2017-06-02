@@ -1,12 +1,12 @@
-cpp-skeleton
-------------
+C++ Html Builder
+----------------
 
-[![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/cpp-skeleton.svg)](https://travis-ci.org/SRombauts/cpp-skeleton "Travis CI Linux Build Status")
-[![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/cpp-skeleton?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/cpp-skeleton "AppVeyor Windows Build status")
+[![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/HtmlBuilder.svg)](https://travis-ci.org/SRombauts/HtmlBuilder "Travis CI Linux Build Status")
+[![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/HtmlBuilder?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/HtmlBuilder "AppVeyor Windows Build status")
 
-A simple skeleton for C++ development with CMake and Google Test.
+A simple C++ HTML Generator.
 
-Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Building & testing with CMake
 
@@ -55,6 +55,6 @@ It is also tested in the same way under Windows Server 2012 R2 with Visual Studi
 using the AppVeyor countinuous integration service.
 
 Detailed results can be seen online:
- - https://travis-ci.org/SRombauts/cpp-skeleton
- - https://ci.appveyor.com/project/SbastienRombauts/cpp-skeleton
+ - https://travis-ci.org/SRombauts/HtmlBuilder
+ - https://ci.appveyor.com/project/SbastienRombauts/HtmlBuilder
 

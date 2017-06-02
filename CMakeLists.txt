@@ -1,10 +1,10 @@
-# Copyright (c) 2013-2015 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 2.6)
-project(CppSkeleton)
+cmake_minimum_required(VERSION 2.12)
+project(HtmlBuilder)
 
 # Print some standard CMake variables
 message(STATUS "CMAKE_SYSTEM_NAME/_VERSION      '${CMAKE_SYSTEM_NAME}' '${CMAKE_SYSTEM_VERSION}'")
@@ -88,25 +88,25 @@ source_group(doc,     FILES ${doc_files})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
 # add the application executable
-add_executable(CppSkeleton ${source_files} ${doc_files} ${script_files})
-target_link_libraries(CppSkeleton ${SYSTEM_LIBRARIES})
+add_executable(HtmlBuilder ${source_files} ${doc_files} ${script_files})
+target_link_libraries(HtmlBuilder ${SYSTEM_LIBRARIES})
 
 
 # Optional additional targets:
 
-option(CPPSKELETON_RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." ON)
-if (CPPSKELETON_RUN_CPPLINT)
+option(RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." ON)
+if (RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(cpplint
      ALL
      COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${source_files}
     )
-else (CPPSKELETON_RUN_CPPLINT)
-    message(STATUS "CPPSKELETON_RUN_CPPLINT OFF")
-endif (CPPSKELETON_RUN_CPPLINT)
+else (RUN_CPPLINT)
+    message(STATUS "RUN_CPPLINT OFF")
+endif (RUN_CPPLINT)
 
-option(CPPSKELETON_RUN_CPPCHECK "Run cppcheck C++ static analysis tool." ON)
-if (CPPSKELETON_RUN_CPPCHECK)
+option(RUN_CPPCHECK "Run cppcheck C++ static analysis tool." ON)
+if (RUN_CPPCHECK)
     find_program(CPPCHECK_EXECUTABLE NAMES cppcheck)
     if (CPPCHECK_EXECUTABLE)
         # add a cppcheck target to the "all" target
@@ -117,12 +117,12 @@ if (CPPSKELETON_RUN_CPPCHECK)
     else (CPPCHECK_EXECUTABLE)
         message(STATUS "Could NOT find cppcheck")
     endif (CPPCHECK_EXECUTABLE)
-else (CPPSKELETON_RUN_CPPCHECK)
-    message(STATUS "CPPSKELETON_RUN_CPPCHECK OFF")
-endif (CPPSKELETON_RUN_CPPCHECK)
+else (RUN_CPPCHECK)
+    message(STATUS "RUN_CPPCHECK OFF")
+endif (RUN_CPPCHECK)
 
-option(CPPSKELETON_RUN_DOXYGEN "Run Doxygen C++ documentation tool." ON)
-if (CPPSKELETON_RUN_DOXYGEN)
+option(RUN_DOXYGEN "Run Doxygen C++ documentation tool." ON)
+if (RUN_DOXYGEN)
     find_package(Doxygen)
     if (DOXYGEN_FOUND)
         # add a Doxygen target to the "all" target
@@ -132,13 +132,13 @@ if (CPPSKELETON_RUN_DOXYGEN)
          WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         )
     endif (DOXYGEN_FOUND)
-else (CPPSKELETON_RUN_DOXYGEN)
-    message(STATUS "CPPSKELETON_RUN_DOXYGEN OFF")
-endif (CPPSKELETON_RUN_DOXYGEN)
+else (RUN_DOXYGEN)
+    message(STATUS "RUN_DOXYGEN OFF")
+endif (RUN_DOXYGEN)
 
 
-option(CPPSKELETON_RUN_TESTS "Run gtest unit-test suite." ON)
-if (CPPSKELETON_RUN_TESTS)
+option(RUN_TESTS "Run gtest unit-test suite." ON)
+if (RUN_TESTS)
     # add the subdirectory containing the CMakeLists.txt for the gtest library
     add_subdirectory(googletest) 
     include_directories("${PROJECT_SOURCE_DIR}/googletest/include")
@@ -152,11 +152,11 @@ if (CPPSKELETON_RUN_TESTS)
     enable_testing()
 
     # does the application runs
-    add_test(ApplicationRuns CppSkeleton)
+    add_test(ApplicationRuns HtmlBuilder)
 
     # does the tests pass
     add_test(TestsPass TestSkeleton)
-else (CPPSKELETON_RUN_TESTS)
-    message(STATUS "CPPSKELETON_RUN_TESTS OFF")
-endif (CPPSKELETON_RUN_TESTS)
+else (RUN_TESTS)
+    message(STATUS "RUN_TESTS OFF")
+endif (RUN_TESTS)
 
