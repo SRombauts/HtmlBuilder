@@ -60,11 +60,9 @@ set(CPPLINT_ARG_VERBOSE    "--verbose=1")
 # List all sources/headers files
 set(source_files
  ${CMAKE_SOURCE_DIR}/src/Main.cpp
- ${CMAKE_SOURCE_DIR}/src/Utils/DateTime.cpp src/Utils/DateTime.h
- ${CMAKE_SOURCE_DIR}/src/Utils/Measure.cpp src/Utils/Measure.h
- ${CMAKE_SOURCE_DIR}/src/Utils/Random.cpp src/Utils/Random.h
- ${CMAKE_SOURCE_DIR}/src/Utils/Time.cpp src/Utils/Time.h
- ${CMAKE_SOURCE_DIR}/src/Utils/Utils.h
+ ${CMAKE_SOURCE_DIR}/include/HTML/HTML.h
+ ${CMAKE_SOURCE_DIR}/include/HTML/Node.h
+ ${CMAKE_SOURCE_DIR}/include/HTML/Document.h
 )
 source_group(src,     FILES ${source_files})
 
@@ -84,8 +82,8 @@ set(doc_files
 )
 source_group(doc,     FILES ${doc_files})
 
-# All includes are relative to the "src" directory
-include_directories("${PROJECT_SOURCE_DIR}/src")
+# All includes are relative to the "include" directory
+include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # add the application executable
 add_executable(HtmlBuilder ${source_files} ${doc_files} ${script_files})
@@ -137,16 +135,16 @@ else (RUN_DOXYGEN)
 endif (RUN_DOXYGEN)
 
 
-option(RUN_TESTS "Run gtest unit-test suite." ON)
+option(RUN_TESTS "Run gtest unit-test suite." OFF)
 if (RUN_TESTS)
     # add the subdirectory containing the CMakeLists.txt for the gtest library
     add_subdirectory(googletest) 
     include_directories("${PROJECT_SOURCE_DIR}/googletest/include")
 
     # add the test executable
-    add_executable(TestSkeleton
-     src/Utils/Time.cpp src/Utils/Time.h src/Utils/Time_test.cpp)
-    target_link_libraries(TestSkeleton gtest_main ${SYSTEM_LIBRARIES})
+    add_executable(TestHtmlBuilder
+        include/HTML/HTML.h)
+    target_link_libraries(TestHtmlBuilder gtest_main ${SYSTEM_LIBRARIES})
 
     # add a "test" target:
     enable_testing()
@@ -155,7 +153,7 @@ if (RUN_TESTS)
     add_test(ApplicationRuns HtmlBuilder)
 
     # does the tests pass
-    add_test(TestsPass TestSkeleton)
+    add_test(TestsPass TestHtmlBuilder)
 else (RUN_TESTS)
     message(STATUS "RUN_TESTS OFF")
 endif (RUN_TESTS)

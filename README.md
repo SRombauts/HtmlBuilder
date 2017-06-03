@@ -4,7 +4,7 @@ C++ Html Builder
 [![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/HtmlBuilder.svg)](https://travis-ci.org/SRombauts/HtmlBuilder "Travis CI Linux Build Status")
 [![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/HtmlBuilder?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/HtmlBuilder "AppVeyor Windows Build status")
 
-A simple C++ HTML Generator.
+A simple C++ HTML Generator library.
 
 Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
