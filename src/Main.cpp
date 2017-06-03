@@ -33,11 +33,52 @@ public:
         return *this;
     }
 
-    friend std::ostream& operator<< (std::ostream& aStream, const Node& aNode);
+    friend std::ostream& operator<<(std::ostream& aStream, const Node& aNode);
     std::string toString() const {
         std::ostringstream stream;
         stream << *this;
         return stream.str();
+    }
+
+private:
+    std::ostream& toString(std::ostream& aStream) const {
+        toStringOpen(aStream);
+        toStringContent(aStream);
+        toStringClose(aStream);
+        return aStream;
+    }
+
+    void toStringOpen(std::ostream& aStream) const {
+        if (!mName.empty()) {
+            aStream << '<' << mName;
+        }
+        for (const auto& attr : mAttributes) {
+            aStream << ' ' << attr.first << "=\"" << attr.second << "\"";
+        }
+        if (mContent.empty() && mChildren.empty()) {
+            if (!mName.empty()) {
+                aStream << "/>\n";
+            }
+        }
+        else {
+            if (mContent.empty()) {
+                aStream << ">\n";
+            }
+            else {
+                aStream << '>';
+            }
+        }
+    }
+    void toStringContent(std::ostream& aStream) const {
+        aStream << mContent;
+        for (auto& child : mChildren) {
+            aStream << child;
+        }
+    }
+    void toStringClose(std::ostream& aStream) const {
+        if ((!mContent.empty() || !mChildren.empty()) && !mName.empty()) {
+            aStream << "</" << mName << ">\n";
+        }
     }
 
 private:
@@ -47,26 +88,8 @@ private:
     std::vector<Node> mChildren;
 };
 
-std::ostream& operator<< (std::ostream& aStream, const Node& aNode) {
-    aStream << '<' << aNode.mName;
-    for (const auto& attr : aNode.mAttributes) {
-        aStream << ' ' << attr.first << "=\"" << attr.second << "\"";
-    }
-    if (aNode.mContent.empty() && aNode.mChildren.empty()) {
-        aStream << "/>\n";
-    }
-    else {
-        if (aNode.mContent.empty()) {
-            aStream << ">\n";
-        } else  {
-            aStream << '>' << aNode.mContent;
-        }
-        for (auto& child : aNode.mChildren) {
-            aStream << child;
-        }
-        aStream << "</" << aNode.mName << ">\n";
-    }
-    return aStream;
+std::ostream& operator<<(std::ostream& aStream, const Node& aNode) {
+    return aNode.toString(aStream);
 }
 
 
@@ -132,13 +155,6 @@ public:
         return *this;
     }
 
-    friend std::ostream& operator<< (std::ostream& aStream, const Document& aNode);
-    std::string toString() const {
-        std::ostringstream stream;
-        stream << *this;
-        return stream.str();
-    }
-
     Node& head() {
         return mHead;
     }
@@ -146,17 +162,26 @@ public:
         return mBody;
     }
 
+    friend std::ostream& operator<< (std::ostream& aStream, const Document& aNode);
+    std::string toString() const {
+        std::ostringstream stream;
+        stream << *this;
+        return stream.str();
+    }
+
+private:
+    std::ostream& toString(std::ostream& aStream) const {
+        aStream << "<html>\n" << mHead << mBody << "</html>\n";
+        return aStream;
+    }
+
 private:
     Head mHead;
     Body mBody;
 };
 
-std::ostream& operator<< (std::ostream& aStream, const Document& aNode) {
-    aStream << "<html>\n";
-    aStream << aNode.mHead;
-    aStream << aNode.mBody;
-    aStream << "</html>\n";
-    return aStream;
+std::ostream& operator<< (std::ostream& aStream, const Document& aDocument) {
+    return aDocument.toString(aStream);
 }
 
 } // namespace HTML
@@ -169,7 +194,7 @@ int main() {
     document.head() << HTML::Title("Welcome to HTML");
     document << HTML::Header1("Welcome to HTML");
     // TODO: we would need to embedd nodes into other nodes like "<p>text<br/>next line</p>"
-    document << HTML::Paragraph("This is the way to go for a big text.") << HTML::Break();
+//    document << HTML::Paragraph("This is the way to go for a big text.") << "Additionnal text for the same paragraph.";
     document << HTML::Paragraph("Another paragraph.") << HTML::Break();
     document << HTML::Link("Google", "http://google.com");
     std::cout << document;
