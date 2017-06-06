@@ -59,7 +59,7 @@ public:
 
 private:
     std::ostream& toString(std::ostream& aStream) const {
-        aStream << "<html>\n" << mHead << mBody << "</html>\n";
+        aStream << "<!doctype html>\n<html>\n" << mHead << mBody << "</html>\n";
         return aStream;
     }
 
