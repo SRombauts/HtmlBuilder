@@ -19,24 +19,28 @@ namespace HTML {
 
 class Node {
 public:
+    Node(const char* apName, std::string&& aContent) :
+        mName(apName), mContent(aContent) {}
     Node(const char* apName, const std::string& aContent) :
         mName(apName), mContent(aContent) {}
     explicit Node(const char* apName, const char* apContent = nullptr) :
         mName(apName), mContent(apContent ? apContent : "") {}
 
-    Node& addAttribute(const char* apName, const std::string& aValue) {
+    Node&& addAttribute(const char* apName, const std::string& aValue) {
         mAttributes[apName] = aValue;
-        return *this;
+        return std::move(*this);
     }
-    Node& addChild(Node&& aNode) {
+    Node&& addChild(Node&& aNode) {
         mChildren.push_back(std::move(aNode));
-        return *this;
+        return std::move(*this);
     }
-    Node& operator<<(Node&& aNode) {
+    Node&& operator<<(Node&& aNode) {
         addChild(std::move(aNode));
-        return *this;
+        return std::move(*this);
     }
-    Node& operator<<(const char* apContent);
+    Node&& operator<<(const char* apContent);
+    Node&& operator<<(std::string&& aContent);
+    Node&& operator<<(const std::string& aContent);
 
     friend std::ostream& operator<<(std::ostream& aStream, const Node& aNode);
     std::string toString() const {
@@ -46,6 +50,7 @@ public:
     }
 
 private:
+    // TODO(SRombauts) indentation?
     std::ostream& toString(std::ostream& aStream) const {
         toStringOpen(aStream);
         toStringContent(aStream);
@@ -60,10 +65,13 @@ private:
         for (const auto& attr : mAttributes) {
             aStream << ' ' << attr.first << "=\"" << attr.second << "\"";
         }
-        // TODO(SRombauts): rewrite/optimize the following
         if (!mName.empty()) {
             if (mContent.empty()) {
-                aStream << "/>\n";
+                if (mChildren.empty()) {
+                    aStream << "/>\n";
+                } else {
+                    aStream << ">\n";
+                }
             } else {
                 aStream << '>';
             }
@@ -95,11 +103,23 @@ std::ostream& operator<<(std::ostream& aStream, const Node& aNode) {
 class Text : public Node {
 public:
     explicit Text(const char* apContent) : Node("", apContent) {}
+    explicit Text(std::string&& aContent) : Node("", aContent) {}
+    explicit Text(const std::string& aContent) : Node("", aContent) {}
 };
 
-Node& Node::operator<<(const char* apContent) {
+Node&& Node::operator<<(const char* apContent) {
     addChild(Text(apContent));
-    return *this;
+    return std::move(*this);
+}
+
+Node&& Node::operator<<(std::string&& aContent) {
+    addChild(Text(aContent));
+    return std::move(*this);
+}
+
+Node&& Node::operator<<(const std::string& aContent) {
+    addChild(Text(aContent.c_str()));
+    return std::move(*this);
 }
 
 
@@ -113,8 +133,36 @@ public:
     Body() : Node("body") {}
 };
 
+class Break : public Node {
+public:
+    Break() : Node("br") {}
+};
+
+class Table : public Node {
+public:
+    Table() : Node("table") {}
+};
+
+class Row : public Node {
+public:
+    Row() : Node("tr") {}
+};
+
+class ColHeader : public Node {
+public:
+    ColHeader() : Node("th") {}
+};
+
+class Col : public Node {
+public:
+    explicit Col(const char* apContent = nullptr) : Node("td", apContent) {}
+    explicit Col(std::string&& aContent) : Node("td", aContent) {}
+    explicit Col(const std::string& aContent) : Node("td", aContent) {}
+};
+
 class Title : public Node {
 public:
+    explicit Title(const char* apContent) : Node("title", apContent) {}
     explicit Title(const std::string& aContent) : Node("title", aContent) {}
 };
 
@@ -143,11 +191,6 @@ public:
     Link(const std::string& aContent, const std::string& aUrl) : Node("a", aContent) {
         addAttribute("href", aUrl);
     }
-};
-
-class Break : public Node {
-public:
-    Break() : Node("br") {}
 };
 
 } // namespace HTML
