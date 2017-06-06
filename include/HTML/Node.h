@@ -156,13 +156,14 @@ public:
 class Col : public Node {
 public:
     explicit Col(const char* apContent = nullptr) : Node("td", apContent) {}
-    explicit Col(std::string&& aContent) : Node("td", aContent) {}
+    explicit Col(std::string&& aContent) : Node("td", std::move(aContent)) {}
     explicit Col(const std::string& aContent) : Node("td", aContent) {}
 };
 
 class Title : public Node {
 public:
     explicit Title(const char* apContent) : Node("title", apContent) {}
+    explicit Title(std::string&& aContent) : Node("title", std::move(aContent)) {}
     explicit Title(const std::string& aContent) : Node("title", aContent) {}
 };
 

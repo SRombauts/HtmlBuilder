@@ -20,7 +20,17 @@ namespace HTML {
 
 class Document {
 public:
-    Document() {}
+    explicit Document(const char* apTitle = nullptr) {
+        if (nullptr != apTitle) {
+            addToHead(HTML::Title(apTitle));
+        }
+    }
+    explicit Document(std::string&& aTitle) {
+        addToHead(HTML::Title(std::move(aTitle)));
+    }
+    explicit Document(const std::string& aTitle) {
+        addToHead(HTML::Title(aTitle));
+    }
 
     void addToHead(Node&& aNode) {
         mHead.addChild(std::move(aNode));
