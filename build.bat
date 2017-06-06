@@ -12,7 +12,4 @@ cmake ..
 @REM Build default configuration (ie 'Debug')
 cmake --build .
 
-@REM Run unit-tests (ie 'make test')
-ctest .
-
 cd ..

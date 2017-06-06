@@ -68,8 +68,6 @@ source_group(src,     FILES ${source_files})
 
 # List script files
 set(script_files
- ${CMAKE_SOURCE_DIR}/.travis.yml
- ${CMAKE_SOURCE_DIR}/appveyor.yml
  ${CMAKE_SOURCE_DIR}/build.bat
  ${CMAKE_SOURCE_DIR}/build.sh
 )
@@ -133,28 +131,4 @@ if (RUN_DOXYGEN)
 else (RUN_DOXYGEN)
     message(STATUS "RUN_DOXYGEN OFF")
 endif (RUN_DOXYGEN)
-
-
-option(RUN_TESTS "Run gtest unit-test suite." OFF)
-if (RUN_TESTS)
-    # add the subdirectory containing the CMakeLists.txt for the gtest library
-    add_subdirectory(googletest) 
-    include_directories("${PROJECT_SOURCE_DIR}/googletest/include")
-
-    # add the test executable
-    add_executable(TestHtmlBuilder
-        include/HTML/HTML.h)
-    target_link_libraries(TestHtmlBuilder gtest_main ${SYSTEM_LIBRARIES})
-
-    # add a "test" target:
-    enable_testing()
-
-    # does the application runs
-    add_test(ApplicationRuns HtmlBuilder)
-
-    # does the tests pass
-    add_test(TestsPass TestHtmlBuilder)
-else (RUN_TESTS)
-    message(STATUS "RUN_TESTS OFF")
-endif (RUN_TESTS)
 
