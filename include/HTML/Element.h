@@ -54,7 +54,11 @@ public:
         return stream.str();
     }
 
-private:
+protected:
+    /// Constructor of the Root Element
+    Element() : mName("html"), mChildren{Element("head"), Element("body")} {
+    }
+
     // TODO(SRombauts) indentation?
     std::ostream& toString(std::ostream& aStream) const {
         toStringOpen(aStream);
@@ -63,6 +67,7 @@ private:
         return aStream;
     }
 
+private:
     void toStringOpen(std::ostream& aStream) const {
         if (!mName.empty()) {
             aStream << '<' << mName;
@@ -94,7 +99,7 @@ private:
         }
     }
 
-private:
+protected:
     std::string mName;
     std::string mContent;
     std::map<std::string, std::string> mAttributes;
@@ -127,16 +132,6 @@ Element&& Element::operator<<(const std::string& aContent) {
     return std::move(*this);
 }
 
-
-class Head : public Element {
-public:
-    Head() : Element("head") {}
-};
-
-class Body : public Element {
-public:
-    Body() : Element("body") {}
-};
 
 class Break : public Element {
 public:
