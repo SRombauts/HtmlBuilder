@@ -1,7 +1,7 @@
 /**
-* @file    Main.cpp
+* @file    Document.h
 * @ingroup HtmlBuilder
-* @brief   A simple C++ HTML Generator library.
+* @brief   Root of the HTML Document Object Model.
 *
 * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 *
@@ -18,6 +18,12 @@
 
 namespace HTML {
 
+/**
+ * @brief Root of the HTML Document Object Model.
+ *
+ * The Document is not a specialized Node only to restrict what can be done on it,
+ * since many aspects of the <html> root tag are well defined.
+ */
 class Document {
 public:
     explicit Document(const char* apTitle = nullptr) {

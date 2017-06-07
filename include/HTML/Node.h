@@ -1,7 +1,7 @@
 /**
-* @file    Main.cpp
+* @file    Node.h
 * @ingroup HtmlBuilder
-* @brief   A simple C++ HTML Generator library.
+* @brief   Definitions of a Node in the HTML Document Object Model, and various specialized Node types.
 *
 * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 *
@@ -17,6 +17,11 @@
 
 namespace HTML {
 
+/**
+ * @brief Definitions of a Node in the HTML Document Object Model, and various specialized Node types.
+ *
+ * A Node represents any HTML element in a Document (DOM) other than the root #Document itself.
+ */
 class Node {
 public:
     Node(const char* apName, std::string&& aContent) :
@@ -156,14 +161,26 @@ public:
 class Col : public Node {
 public:
     explicit Col(const char* apContent = nullptr) : Node("td", apContent) {}
-    explicit Col(std::string&& aContent) : Node("td", std::move(aContent)) {}
+    explicit Col(std::string&& aContent) : Node("td", aContent) {}
     explicit Col(const std::string& aContent) : Node("td", aContent) {}
+
+    Node&& rowSpan(const unsigned int aNbRow) {
+        if (0 < aNbRow) {
+            addAttribute("rowspan", std::to_string(aNbRow));
+        }
+        return std::move(*this);
+    }
+    Node&& colSpan(const unsigned int aNbCol) {
+        if (0 < aNbCol) {
+            addAttribute("colspan", std::to_string(aNbCol));
+        }
+        return std::move(*this);
+    }
 };
 
 class Title : public Node {
 public:
     explicit Title(const char* apContent) : Node("title", apContent) {}
-    explicit Title(std::string&& aContent) : Node("title", std::move(aContent)) {}
     explicit Title(const std::string& aContent) : Node("title", aContent) {}
 };
 
