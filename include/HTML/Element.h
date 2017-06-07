@@ -54,6 +54,22 @@ public:
         return stream.str();
     }
 
+    Element&& id(const std::string& aValue) {
+        return addAttribute("id", aValue);
+    }
+
+    Element&& cls(const std::string& aValue) {
+        return addAttribute("class", aValue);
+    }
+
+    Element&& title(const std::string& aValue) {
+        return addAttribute("title", aValue);
+    }
+
+    Element&& style(const std::string& aValue) {
+        return addAttribute("style", aValue);
+    }
+
 protected:
     /// Constructor of the Root Element
     Element() : mName("html"), mChildren{Element("head"), Element("body")} {
