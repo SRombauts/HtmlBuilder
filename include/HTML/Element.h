@@ -106,7 +106,7 @@ protected:
     std::vector<Element> mChildren;
 };
 
-std::ostream& operator<<(std::ostream& aStream, const Element& aElement) {
+inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) {
     return aElement.toString(aStream);
 }
 
@@ -117,17 +117,17 @@ public:
     explicit Text(const std::string& aContent) : Element("", aContent) {}
 };
 
-Element&& Element::operator<<(const char* apContent) {
+inline Element&& Element::operator<<(const char* apContent) {
     addChild(Text(apContent));
     return std::move(*this);
 }
 
-Element&& Element::operator<<(std::string&& aContent) {
+inline Element&& Element::operator<<(std::string&& aContent) {
     addChild(Text(aContent));
     return std::move(*this);
 }
 
-Element&& Element::operator<<(const std::string& aContent) {
+inline Element&& Element::operator<<(const std::string& aContent) {
     addChild(Text(aContent.c_str()));
     return std::move(*this);
 }

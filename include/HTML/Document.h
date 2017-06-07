@@ -77,7 +77,7 @@ private:
     Element& mBody; ///< Reference to the second child <body> Element
 };
 
-std::ostream& operator<< (std::ostream& aStream, const Document& aDocument) {
+inline std::ostream& operator<< (std::ostream& aStream, const Document& aDocument) {
     return aDocument.toString(aStream);
 }
 
