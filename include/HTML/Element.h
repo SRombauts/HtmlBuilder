@@ -210,6 +210,7 @@ public:
 
 class Item : public Element {
 public:
+   explicit Item(const char* apContent) : Element("li", apContent) {}
    explicit Item(const std::string& aContent) : Element("li", aContent) {}
 };
 class List : public Element {
@@ -229,6 +230,40 @@ public:
    }
 };
 
+
+class Input : public Element {
+public:
+   explicit Input(const char* apType, const char* apName = nullptr, const char* apValue = nullptr) : Element("input") {
+      addAttribute("type", apType);
+      if (nullptr != apName) {
+         addAttribute("name", apName);
+      }
+      if (nullptr != apValue) {
+         addAttribute("value", apValue);
+      }
+   }
+};
+
+class Form : public Element {
+public:
+   Form(const char* apAction = nullptr) : Element("form") {
+      if (nullptr != apAction) {
+         addAttribute("action", apAction);
+      }
+   }
+
+   Element&& addChild(Element&& aElement) = delete;
+   Element&& operator<<(Element&& aElement) = delete;
+
+   Element&& addChild(Input&& aInput) {
+       mChildren.push_back(std::move(aInput));
+       return std::move(*this);
+   }
+   Element&& operator<<(Input&& aInput) {
+       addChild(std::move(aInput));
+       return std::move(*this);
+   }
+};
 
 class Style : public Element {
 public:
