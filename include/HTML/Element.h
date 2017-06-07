@@ -154,40 +154,81 @@ public:
     Break() : Element("br") {}
 };
 
-class Table : public Element {
-public:
-    Table() : Element("table") {}
-};
-
-class Row : public Element {
-public:
-    Row() : Element("tr") {}
-};
-
-class ColHeader : public Element {
-public:
-    ColHeader() : Element("th") {}
-};
-
 class Col : public Element {
 public:
     explicit Col(const char* apContent = nullptr) : Element("td", apContent) {}
     explicit Col(std::string&& aContent) : Element("td", aContent) {}
     explicit Col(const std::string& aContent) : Element("td", aContent) {}
 
-    Element&& rowSpan(const unsigned int aNbRow) {
+    Col&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
             addAttribute("rowspan", std::to_string(aNbRow));
         }
         return std::move(*this);
     }
-    Element&& colSpan(const unsigned int aNbCol) {
+    Col&& colSpan(const unsigned int aNbCol) {
         if (0 < aNbCol) {
             addAttribute("colspan", std::to_string(aNbCol));
         }
         return std::move(*this);
     }
 };
+
+class Row : public Element {
+public:
+    Row() : Element("tr") {}
+
+    Row&& addChild(Element&& aElement) = delete;
+    Row&& operator<<(Element&& aElement) = delete;
+
+    Row&& addChild(Col&& aCol) {
+        mChildren.push_back(std::move(aCol));
+        return std::move(*this);
+    }
+    Row&& operator<<(Col&& aCol) {
+        addChild(std::move(aCol));
+        return std::move(*this);
+    }
+};
+
+class Table : public Element {
+public:
+    Table() : Element("table") {}
+
+    Element&& addChild(Element&& aElement) = delete;
+    Element&& operator<<(Element&& aElement) = delete;
+
+    Element&& addChild(Row&& aRow) {
+        mChildren.push_back(std::move(aRow));
+        return std::move(*this);
+    }
+    Element&& operator<<(Row&& aRow) {
+        addChild(std::move(aRow));
+        return std::move(*this);
+    }
+};
+
+class Item : public Element {
+public:
+   explicit Item(const std::string& aContent) : Element("li", aContent) {}
+};
+class List : public Element {
+public:
+   List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
+
+   Element&& addChild(Element&& aElement) = delete;
+   Element&& operator<<(Element&& aElement) = delete;
+
+   Element&& addChild(Item&& aItem) {
+       mChildren.push_back(std::move(aItem));
+       return std::move(*this);
+   }
+   Element&& operator<<(Item&& aItem) {
+       addChild(std::move(aItem));
+       return std::move(*this);
+   }
+};
+
 
 class Style : public Element {
 public:
