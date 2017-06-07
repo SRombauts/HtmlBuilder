@@ -57,14 +57,19 @@ endif (MSVC)
 set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 set(CPPLINT_ARG_VERBOSE    "--verbose=1")
 
-# List all sources/headers files
-set(source_files
- ${CMAKE_SOURCE_DIR}/src/Main.cpp
+# List all headers files
+set(headers_files
  ${CMAKE_SOURCE_DIR}/include/HTML/HTML.h
- ${CMAKE_SOURCE_DIR}/include/HTML/Node.h
+ ${CMAKE_SOURCE_DIR}/include/HTML/Element.h
  ${CMAKE_SOURCE_DIR}/include/HTML/Document.h
 )
-source_group(src,     FILES ${source_files})
+source_group(headers, FILES ${headers_files})
+
+# List all example source files
+set(examples_files
+ ${CMAKE_SOURCE_DIR}/src/Main.cpp
+)
+source_group(example, FILES ${examples_files})
 
 # List script files
 set(script_files
@@ -84,7 +89,7 @@ source_group(doc,     FILES ${doc_files})
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # add the application executable
-add_executable(HtmlBuilder ${source_files} ${doc_files} ${script_files})
+add_executable(HtmlBuilder ${headers_files} ${doc_files} ${script_files} ${examples_files})
 target_link_libraries(HtmlBuilder ${SYSTEM_LIBRARIES})
 
 
@@ -95,7 +100,7 @@ if (RUN_CPPLINT)
     # add a cpplint target to the "all" target
     add_custom_target(cpplint
      ALL
-     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${source_files}
+     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${headers_files}
     )
 else (RUN_CPPLINT)
     message(STATUS "RUN_CPPLINT OFF")

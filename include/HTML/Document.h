@@ -1,7 +1,7 @@
 /**
 * @file    Document.h
 * @ingroup HtmlBuilder
-* @brief   Root of the HTML Document Object Model.
+* @brief   Root Element of the HTML Document Object Model.
 *
 * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 *
@@ -10,7 +10,7 @@
 */
 #pragma once
 
-#include "Node.h"
+#include "Element.h"
 
 #include <sstream>
 #include <string>
@@ -19,9 +19,10 @@
 namespace HTML {
 
 /**
- * @brief Root of the HTML Document Object Model.
+ * @brief Root Element of the HTML Document Object Model.
  *
- * The Document is not a specialized Node only to restrict what can be done on it,
+ * TODO NOCOMMIT: rework this to make it an Element as all other, with some overloads/deleted methods to restrict what can be done
+ *   The Document is not a specialized Element only to restrict what can be done on it,
  * since many aspects of the <html> root tag are well defined.
  */
 class Document {
@@ -38,25 +39,25 @@ public:
         addToHead(HTML::Title(aTitle));
     }
 
-    void addToHead(Node&& aNode) {
-        mHead.addChild(std::move(aNode));
+    void addToHead(Element&& aElement) {
+        mHead.addChild(std::move(aElement));
     }
-    void addToBody(Node&& aNode) {
-        mBody.addChild(std::move(aNode));
+    void addToBody(Element&& aElement) {
+        mBody.addChild(std::move(aElement));
     }
-    Node& operator<<(Node&& aNode) {
-        addToBody(std::move(aNode));
+    Element& operator<<(Element&& aElement) {
+        addToBody(std::move(aElement));
         return mBody;
     }
 
-    Node& head() {
+    Element& head() {
         return mHead;
     }
-    Node& body() {
+    Element& body() {
         return mBody;
     }
 
-    friend std::ostream& operator<< (std::ostream& aStream, const Document& aNode);
+    friend std::ostream& operator<< (std::ostream& aStream, const Document& aElement);
     std::string toString() const {
         std::ostringstream stream;
         stream << *this;
