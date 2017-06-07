@@ -173,6 +173,12 @@ public:
     }
 };
 
+class Style : public Element {
+public:
+    explicit Style(const char* apContent) : Element("style", apContent) {}
+    explicit Style(const std::string& aContent) : Element("style", aContent) {}
+};
+
 class Title : public Element {
 public:
     explicit Title(const char* apContent) : Element("title", apContent) {}

@@ -37,6 +37,18 @@ public:
     explicit Document(const std::string& aTitle) : mHead(mChildren[0]), mBody(mChildren[1]) {
         addToHead(HTML::Title(aTitle));
     }
+    Document(const char* apTitle, Style&& aStyle) : mHead(mChildren[0]), mBody(mChildren[1]) {
+        addToHead(HTML::Title(apTitle));
+        addToHead(std::move(aStyle));
+    }
+    Document(const std::string& aTitle, Style&& aStyle) : mHead(mChildren[0]), mBody(mChildren[1]) {
+        addToHead(HTML::Title(aTitle));
+        addToHead(std::move(aStyle));
+    }
+    Document(std::string&& aTitle, Style&& aStyle) : mHead(mChildren[0]), mBody(mChildren[1]) {
+        addToHead(HTML::Title(std::move(aTitle)));
+        addToHead(std::move(aStyle));
+    }
 
     void addToHead(Element&& aElement) {
        mHead.addChild(std::move(aElement));
