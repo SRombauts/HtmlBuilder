@@ -84,7 +84,10 @@ private:
             aStream << '<' << mName;
         }
         for (const auto& attr : mAttributes) {
-            aStream << ' ' << attr.first << "=\"" << attr.second << "\"";
+            aStream << ' ' << attr.first;
+            if (!attr.second.empty()) {
+                aStream << "=\"" << attr.second << "\"";
+            }
         }
         if (!mName.empty()) {
             if (mContent.empty()) {
@@ -316,7 +319,8 @@ public:
 
 class Input : public Element {
 public:
-    explicit Input(const char* apType, const char* apName = nullptr, const char* apValue = nullptr) : Element("input") {
+    explicit Input(const char* apType, const char* apName = nullptr, const char* apValue = nullptr, const char* apContent = nullptr) :
+        Element("input", apContent) {
         addAttribute("type", apType);
         if (nullptr != apName) {
             addAttribute("name", apName);
@@ -325,19 +329,149 @@ public:
             addAttribute("value", apValue);
         }
     }
+
+    Input&& addAttribute(const char* apName, const std::string& aValue) {
+        mAttributes[apName] = aValue;
+        return std::move(*this);
+    }
+
+
+    Input&& id(const std::string& aValue) {
+        return addAttribute("id", aValue);
+    }
+
+    Input&& cls(const std::string& aValue) {
+        return addAttribute("class", aValue);
+    }
+
+    Input&& title(const std::string& aValue) {
+        return addAttribute("title", aValue);
+    }
+
+    Input&& style(const std::string& aValue) {
+        return addAttribute("style", aValue);
+    }
+
+    Input&& size(const unsigned int aSize) {
+        return addAttribute("size", std::to_string(aSize));
+    }
+    Input&& maxlength(const unsigned int aMaxlength) {
+        return addAttribute("maxlength", std::to_string(aMaxlength));
+    }
+    Input&& placeholder(const std::string& aPlaceholder) {
+        return addAttribute("placeholder", aPlaceholder);
+    }
+    Input&& min(const std::string& aMin) {
+        return addAttribute("min", aMin);
+    }
+    Input&& max(const std::string& aMax) { // NOLINT(build/include_what_you_use) false positive
+        return addAttribute("max", aMax);
+    }
+
+    Input&& checked(const bool abChecked = true) {
+        if (abChecked) {
+            addAttribute("checked", "");
+        }
+        return std::move(*this);
+    }
+    Input&& autocomplete() {
+        return addAttribute("autocomplete", "");
+    }
+    Input&& autofocus() {
+        return addAttribute("autofocus", "");
+    }
+    Input&& disabled() {
+        return addAttribute("disabled", "");
+    }
+    Input&& readonly() {
+        return addAttribute("readonly", "");
+    }
+    Input&& required() {
+        return addAttribute("required", "");
+    }
+};
+
+class InputRadio : public Input {
+public:
+    explicit InputRadio(const char* apName, const char* apValue = nullptr, const char* apContent = nullptr) :
+        Input("radio", apName, apValue, apContent) {
+    }
+};
+
+class InputCheckbox : public Input {
+public:
+    explicit InputCheckbox(const char* apName, const char* apValue = nullptr, const char* apContent = nullptr) :
+        Input("checkbox", apName, apValue, apContent) {
+    }
 };
 
 class InputText : public Input {
 public:
-    explicit InputText(const char* apName, const char* apValue) : Input("text", apName, apValue) {
+    explicit InputText(const char* apName, const char* apValue = nullptr) :
+        Input("text", apName, apValue) {
+    }
+};
+
+class InputNumber : public Input {
+public:
+    explicit InputNumber(const char* apName, const char* apValue = nullptr) :
+        Input("number", apName, apValue) {
+    }
+};
+
+class InputRange : public Input {
+public:
+    explicit InputRange(const char* apName, const char* apValue = nullptr) :
+        Input("range", apName, apValue) {
+    }
+};
+
+class InputDate : public Input {
+public:
+    explicit InputDate(const char* apName, const char* apValue = nullptr) :
+        Input("date", apName, apValue) {
+    }
+};
+
+class InputTime : public Input {
+public:
+    explicit InputTime(const char* apName, const char* apValue = nullptr) :
+        Input("time", apName, apValue) {
+    }
+};
+
+class InputEmail : public Input {
+public:
+    explicit InputEmail(const char* apName, const char* apValue = nullptr) :
+        Input("email", apName, apValue) {
+    }
+};
+
+class InputUrl : public Input {
+public:
+    explicit InputUrl(const char* apName, const char* apValue = nullptr) :
+        Input("url", apName, apValue) {
+    }
+};
+
+class InputPassword : public Input {
+public:
+    explicit InputPassword(const char* apName) :
+        Input("password", apName) {
     }
 };
 
 class InputSubmit : public Input {
 public:
-    explicit InputSubmit(const char* apName, const char* apValue) : Input("submit", apName, apValue) {
+    explicit InputSubmit(const char* apValue = nullptr, const char* apName = nullptr) :
+        Input("submit", apName, apValue) {
     }
-    explicit InputSubmit(const char* apValue) : Input("submit", nullptr, apValue) {
+};
+
+class InputReset : public Input {
+public:
+    explicit InputReset(const char* apValue = nullptr) :
+        Input("reset", nullptr, apValue) {
     }
 };
 
