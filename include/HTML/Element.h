@@ -35,12 +35,8 @@ public:
         mAttributes[apName] = aValue;
         return std::move(*this);
     }
-    Element&& addChild(Element&& aElement) {
-        mChildren.push_back(std::move(aElement));
-        return std::move(*this);
-    }
     Element&& operator<<(Element&& aElement) {
-        addChild(std::move(aElement));
+        mChildren.push_back(std::move(aElement));
         return std::move(*this);
     }
     Element&& operator<<(const char* apContent);
@@ -71,9 +67,8 @@ public:
     }
 
 protected:
-    /// Constructor of the Root Element
-    Element() : mName("html"), mChildren{Element("head"), Element("body")} {
-    }
+    /// Constructor reserved for the Root Element
+    Element();
 
     // TODO(SRombauts) indentation?
     std::ostream& toString(std::ostream& aStream) const {
@@ -93,7 +88,7 @@ private:
         }
         if (!mName.empty()) {
             if (mContent.empty()) {
-                if (mChildren.empty()) {
+                if (mChildren.empty() && !mbNonVoid) {
                     aStream << "/>\n";
                 } else {
                     aStream << ">\n";
@@ -110,7 +105,7 @@ private:
         }
     }
     void toStringClose(std::ostream& aStream) const {
-        if ((!mContent.empty() || !mChildren.empty()) && !mName.empty()) {
+        if ((!mContent.empty() || !mChildren.empty() || mbNonVoid) && !mName.empty()) {
             aStream << "</" << mName << ">\n";
         }
     }
@@ -120,6 +115,7 @@ protected:
     std::string mContent;
     std::map<std::string, std::string> mAttributes;
     std::vector<Element> mChildren;
+    bool mbNonVoid = false; // ex. <td></td> (<td/> is not allowed)
 };
 
 inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) {
@@ -134,18 +130,106 @@ public:
 };
 
 inline Element&& Element::operator<<(const char* apContent) {
-    addChild(Text(apContent));
-    return std::move(*this);
+    return *this << Text(apContent);
 }
 
 inline Element&& Element::operator<<(std::string&& aContent) {
-    addChild(Text(aContent));
-    return std::move(*this);
+    return *this << Text(std::move(aContent));
 }
 
 inline Element&& Element::operator<<(const std::string& aContent) {
-    addChild(Text(aContent.c_str()));
-    return std::move(*this);
+    return *this << Text(aContent);
+}
+
+
+class Title : public Element {
+public:
+    explicit Title(const char* apContent) : Element("title", apContent) {}
+    explicit Title(const std::string& aContent) : Element("title", aContent) {}
+};
+
+class Style : public Element {
+public:
+    explicit Style(const char* apContent) : Element("style", apContent) {}
+    explicit Style(const std::string& aContent) : Element("style", aContent) {}
+};
+
+class Script : public Element {
+public:
+    explicit Script(const char* apContent) : Element("script", apContent) {}
+    explicit Script(const std::string& aContent) : Element("script", aContent) {}
+};
+
+class Meta : public Element {
+public:
+    explicit Meta(const char* apCharset) : Element("meta") {
+        addAttribute("charset", apCharset);
+    }
+    explicit Meta(const char* apName, const char* apContent) : Element("meta") {
+        addAttribute("name", apName);
+        addAttribute("content", apContent);
+    }
+};
+
+class Rel : public Element {
+public:
+    Rel(const char* apRel, const char* apUrl, const char* apType = nullptr) : Element("link") {
+        addAttribute("rel", apRel);
+        addAttribute("href", apUrl);
+        if (nullptr != apType) {
+            addAttribute("type", apType);
+        }
+    }
+};
+
+class Base : public Element {
+public:
+    Base(const std::string& aContent, const std::string& aUrl, const char* apTarget) : Element("base", aContent) {
+        addAttribute("href", aUrl);
+        if (nullptr != apTarget) {
+            addAttribute("target", apTarget);
+        }
+    }
+};
+
+class Head : public Element {
+public:
+    Head() : Element("head") {}
+
+    Head&& operator<<(Element&& aElement) = delete;
+    Head&& operator<<(Title&& aTitle) {
+        mChildren.push_back(std::move(aTitle));
+        return std::move(*this);
+    }
+    Head&& operator<<(Style&& aStyle) {
+        mChildren.push_back(std::move(aStyle));
+        return std::move(*this);
+    }
+    Head&& operator<<(Script&& aScript) {
+        mChildren.push_back(std::move(aScript));
+        return std::move(*this);
+    }
+    Head&& operator<<(Meta&& aMeta) {
+        mChildren.push_back(std::move(aMeta));
+        return std::move(*this);
+    }
+    Head&& operator<<(Rel&& aRel) {
+        mChildren.push_back(std::move(aRel));
+        return std::move(*this);
+    }
+    Head&& operator<<(Base&& aBase) {
+        mChildren.push_back(std::move(aBase));
+        return std::move(*this);
+    }
+};
+
+class Body : public Element {
+public:
+    Body() : Element("body") {}
+};
+
+// Constructor of the Root Element
+inline Element::Element() : mName("html"), mChildren{Head(), Body()} {
 }
 
 
@@ -156,9 +240,15 @@ public:
 
 class Col : public Element {
 public:
-    explicit Col(const char* apContent = nullptr) : Element("td", apContent) {}
-    explicit Col(std::string&& aContent) : Element("td", aContent) {}
-    explicit Col(const std::string& aContent) : Element("td", aContent) {}
+    explicit Col(const char* apContent = nullptr) : Element("td", apContent) {
+        mbNonVoid = true;
+    }
+    explicit Col(std::string&& aContent) : Element("td", aContent) {
+        mbNonVoid = true;
+    }
+    explicit Col(const std::string& aContent) : Element("td", aContent) {
+        mbNonVoid = true;
+    }
 
     Col&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
@@ -176,17 +266,13 @@ public:
 
 class Row : public Element {
 public:
-    Row() : Element("tr") {}
-
-    Row&& addChild(Element&& aElement) = delete;
-    Row&& operator<<(Element&& aElement) = delete;
-
-    Row&& addChild(Col&& aCol) {
-        mChildren.push_back(std::move(aCol));
-        return std::move(*this);
+    Row() : Element("tr") {
+        mbNonVoid = true;
     }
+
+    Row&& operator<<(Element&& aElement) = delete;
     Row&& operator<<(Col&& aCol) {
-        addChild(std::move(aCol));
+        mChildren.push_back(std::move(aCol));
         return std::move(*this);
     }
 };
@@ -195,86 +281,64 @@ class Table : public Element {
 public:
     Table() : Element("table") {}
 
-    Element&& addChild(Element&& aElement) = delete;
     Element&& operator<<(Element&& aElement) = delete;
-
-    Element&& addChild(Row&& aRow) {
-        mChildren.push_back(std::move(aRow));
-        return std::move(*this);
-    }
     Element&& operator<<(Row&& aRow) {
-        addChild(std::move(aRow));
+        mChildren.push_back(std::move(aRow));
         return std::move(*this);
     }
 };
 
 class Item : public Element {
 public:
-   explicit Item(const char* apContent) : Element("li", apContent) {}
-   explicit Item(const std::string& aContent) : Element("li", aContent) {}
+    explicit Item(const char* apContent) : Element("li", apContent) {}
+    explicit Item(const std::string& aContent) : Element("li", aContent) {}
 };
 class List : public Element {
 public:
-   List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
+    explicit List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
 
-   Element&& addChild(Element&& aElement) = delete;
-   Element&& operator<<(Element&& aElement) = delete;
-
-   Element&& addChild(Item&& aItem) {
-       mChildren.push_back(std::move(aItem));
-       return std::move(*this);
-   }
-   Element&& operator<<(Item&& aItem) {
-       addChild(std::move(aItem));
-       return std::move(*this);
-   }
+    Element&& operator<<(Element&& aElement) = delete;
+    Element&& operator<<(Item&& aItem) {
+        mChildren.push_back(std::move(aItem));
+        return std::move(*this);
+    }
 };
 
-
-class Input : public Element {
-public:
-   explicit Input(const char* apType, const char* apName = nullptr, const char* apValue = nullptr) : Element("input") {
-      addAttribute("type", apType);
-      if (nullptr != apName) {
-         addAttribute("name", apName);
-      }
-      if (nullptr != apValue) {
-         addAttribute("value", apValue);
-      }
-   }
-};
 
 class Form : public Element {
 public:
-   Form(const char* apAction = nullptr) : Element("form") {
-      if (nullptr != apAction) {
-         addAttribute("action", apAction);
-      }
-   }
-
-   Element&& addChild(Element&& aElement) = delete;
-   Element&& operator<<(Element&& aElement) = delete;
-
-   Element&& addChild(Input&& aInput) {
-       mChildren.push_back(std::move(aInput));
-       return std::move(*this);
-   }
-   Element&& operator<<(Input&& aInput) {
-       addChild(std::move(aInput));
-       return std::move(*this);
-   }
+    explicit Form(const char* apAction = nullptr) : Element("form") {
+        if (nullptr != apAction) {
+            addAttribute("action", apAction);
+        }
+    }
 };
 
-class Style : public Element {
+class Input : public Element {
 public:
-    explicit Style(const char* apContent) : Element("style", apContent) {}
-    explicit Style(const std::string& aContent) : Element("style", aContent) {}
+    explicit Input(const char* apType, const char* apName = nullptr, const char* apValue = nullptr) : Element("input") {
+        addAttribute("type", apType);
+        if (nullptr != apName) {
+            addAttribute("name", apName);
+        }
+        if (nullptr != apValue) {
+            addAttribute("value", apValue);
+        }
+    }
 };
 
-class Title : public Element {
+class InputText : public Input {
 public:
-    explicit Title(const char* apContent) : Element("title", apContent) {}
-    explicit Title(const std::string& aContent) : Element("title", aContent) {}
+    explicit InputText(const char* apName, const char* apValue) : Input("text", apName, apValue) {
+    }
+};
+
+class InputSubmit : public Input {
+public:
+    explicit InputSubmit(const char* apName, const char* apValue) : Input("submit", apName, apValue) {
+    }
+    explicit InputSubmit(const char* apValue) : Input("submit", nullptr, apValue) {
+    }
 };
 
 class Header1 : public Element {
@@ -292,9 +356,93 @@ public:
     explicit Header3(const std::string& aContent) : Element("h3", aContent) {}
 };
 
+class Bold : public Element {
+public:
+    explicit Bold(const std::string& aContent) : Element("b", aContent) {}
+};
+
+class Italic : public Element {
+public:
+    explicit Italic(const std::string& aContent) : Element("i", aContent) {}
+};
+
+class Strong : public Element {
+public:
+    explicit Strong(const std::string& aContent) : Element("strong", aContent) {}
+};
+
+class Mark : public Element {
+public:
+    explicit Mark(const std::string& aContent) : Element("mark", aContent) {}
+};
+
 class Paragraph : public Element {
 public:
     explicit Paragraph(const std::string& aContent) : Element("p", aContent) {}
+};
+
+class Div : public Element {
+public:
+    explicit Div(const std::string& aContent) : Element("div", aContent) {}
+};
+
+class Span : public Element {
+public:
+    explicit Span(const std::string& aContent) : Element("span", aContent) {}
+};
+
+class Header : public Element {
+public:
+    Header() : Element("header") {}
+};
+
+class Footer : public Element {
+public:
+    Footer() : Element("footer") {}
+};
+
+class Section : public Element {
+public:
+    Section() : Element("section") {}
+};
+
+class Article : public Element {
+public:
+    Article() : Element("article") {}
+};
+
+class Nav : public Element {
+public:
+    Nav() : Element("nav") {}
+};
+
+class Aside : public Element {
+public:
+    Aside() : Element("aside") {}
+};
+
+class Main : public Element {
+public:
+    Main() : Element("main") {}
+};
+
+class Figure : public Element {
+public:
+    Figure() : Element("figure") {}
+};
+
+class FigCaption : public Element {
+public:
+    explicit FigCaption(const std::string& aContent) : Element("figcaption", aContent) {}
+};
+class Details : public Element {
+public:
+    Details() : Element("details") {}
+};
+
+class Summary : public Element {
+public:
+    explicit Summary(const std::string& aContent) : Element("summary", aContent) {}
 };
 
 class Link : public Element {

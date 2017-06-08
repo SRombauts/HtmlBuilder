@@ -26,31 +26,27 @@ namespace HTML {
  */
 class Document : public Element {
 public:
-    explicit Document(const char* apTitle = nullptr) : mHead(mChildren[0]), mBody(mChildren[1]) {
-        if (nullptr != apTitle) {
-            addToHead(HTML::Title(apTitle));
-        }
+    explicit Document(const char* apTitle) :
+        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        mHead << HTML::Title(apTitle);
     }
-    explicit Document(const std::string& aTitle) : mHead(mChildren[0]), mBody(mChildren[1]) {
-        addToHead(HTML::Title(aTitle));
+    explicit Document(const std::string& aTitle) :
+        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        mHead << HTML::Title(aTitle);
     }
-    Document(const char* apTitle, Style&& aStyle) : mHead(mChildren[0]), mBody(mChildren[1]) {
-        addToHead(HTML::Title(apTitle));
-        addToHead(std::move(aStyle));
+    Document(const char* apTitle, Style&& aStyle) :
+        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        mHead << HTML::Title(apTitle);
+        mHead << std::move(aStyle);
     }
-    Document(const char* apTitle, const Style& aStyle) : mHead(mChildren[0]), mBody(mChildren[1]) {
-        addToHead(HTML::Title(apTitle));
-        addToHead(Style(aStyle));
+    Document(const char* apTitle, const Style& aStyle) :
+        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        mHead << HTML::Title(apTitle);
+        mHead << Style(aStyle);
     }
 
-    void addToHead(Element&& aElement) {
-       mHead.addChild(std::move(aElement));
-    }
-    void addToBody(Element&& aElement) {
-       mBody.addChild(std::move(aElement));
-    }
     Element& operator<<(Element&& aElement) {
-        addToBody(std::move(aElement));
+        mBody << std::move(aElement);
         return mBody;
     }
 
@@ -61,7 +57,9 @@ public:
         return mBody;
     }
 
-    Element&& addChild(Element&& aElement) = delete;
+    void lang(const char* apLang) {
+        mHead.addAttribute("lang", apLang);
+    }
 
     friend std::ostream& operator<< (std::ostream& aStream, const Document& aElement);
     std::string toString() const {
@@ -72,14 +70,14 @@ public:
 
 private:
     std::ostream& toString(std::ostream& aStream) const {
-        aStream << "<!doctype html>\n";
+        aStream << "<!DOCTYPE html>\n";
         Element::toString(aStream);
         return aStream;
     }
 
 private:
-    Element& mHead; ///< Reference to the first child <head> Element
-    Element& mBody; ///< Reference to the second child <body> Element
+    Head& mHead; ///< Reference to the first child <head> Element
+    Body& mBody; ///< Reference to the second child <body> Element
 };
 
 inline std::ostream& operator<< (std::ostream& aStream, const Document& aDocument) {
