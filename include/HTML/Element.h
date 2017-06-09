@@ -35,6 +35,10 @@ public:
         mAttributes[apName] = aValue;
         return std::move(*this);
     }
+    Element&& addAttribute(const char* apName, const unsigned int aValue) {
+        mAttributes[apName] = std::to_string(aValue);
+        return std::move(*this);
+    }
     Element&& operator<<(Element&& aElement) {
         mChildren.push_back(std::move(aElement));
         return std::move(*this);
@@ -159,8 +163,11 @@ public:
 
 class Script : public Element {
 public:
-    explicit Script(const char* apContent) : Element("script", apContent) {}
-    explicit Script(const std::string& aContent) : Element("script", aContent) {}
+    explicit Script(const char* apSrc, const char* apContent = nullptr) : Element("script", apContent) {
+        if (nullptr != apSrc) {
+            addAttribute("src", apSrc);
+        }
+    }
 };
 
 class Meta : public Element {
@@ -255,13 +262,13 @@ public:
 
     Col&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
-            addAttribute("rowspan", std::to_string(aNbRow));
+            addAttribute("rowspan", aNbRow);
         }
         return std::move(*this);
     }
     Col&& colSpan(const unsigned int aNbCol) {
         if (0 < aNbCol) {
-            addAttribute("colspan", std::to_string(aNbCol));
+            addAttribute("colspan", aNbCol);
         }
         return std::move(*this);
     }
@@ -334,29 +341,29 @@ public:
         mAttributes[apName] = aValue;
         return std::move(*this);
     }
-
+    Input&& addAttribute(const char* apName, const unsigned int aValue) {
+        mAttributes[apName] = std::to_string(aValue);
+        return std::move(*this);
+    }
 
     Input&& id(const std::string& aValue) {
         return addAttribute("id", aValue);
     }
-
     Input&& cls(const std::string& aValue) {
         return addAttribute("class", aValue);
     }
-
     Input&& title(const std::string& aValue) {
         return addAttribute("title", aValue);
     }
-
     Input&& style(const std::string& aValue) {
         return addAttribute("style", aValue);
     }
 
     Input&& size(const unsigned int aSize) {
-        return addAttribute("size", std::to_string(aSize));
+        return addAttribute("size", aSize);
     }
     Input&& maxlength(const unsigned int aMaxlength) {
-        return addAttribute("maxlength", std::to_string(aMaxlength));
+        return addAttribute("maxlength", aMaxlength);
     }
     Input&& placeholder(const std::string& aPlaceholder) {
         return addAttribute("placeholder", aPlaceholder);
@@ -583,6 +590,17 @@ class Link : public Element {
 public:
     Link(const std::string& aContent, const std::string& aUrl) : Element("a", aContent) {
         addAttribute("href", aUrl);
+    }
+};
+
+class Image : public Element {
+public:
+    Image(const std::string& aSrc, const std::string& aAlt, unsigned int aWidth = 0, unsigned int aHeight = 0) :
+        Element("img") {
+        addAttribute("src", aSrc);
+        addAttribute("alt", aAlt);
+        addAttribute("width", aWidth);
+        addAttribute("height", aHeight);
     }
 };
 
