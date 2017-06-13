@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <iterator>
 
 namespace HTML {
 
@@ -74,46 +76,58 @@ protected:
     /// Constructor reserved for the Root Element
     Element();
 
-    // TODO(SRombauts) indentation?
-    std::ostream& toString(std::ostream& aStream) const {
-        toStringOpen(aStream);
-        toStringContent(aStream);
-        toStringClose(aStream);
+    std::ostream& toString(std::ostream& aStream, const size_t aIndentation = 0) const {
+        toStringOpen(aStream, aIndentation);
+        toStringContent(aStream, aIndentation);
+        toStringClose(aStream, aIndentation);
         return aStream;
     }
 
 private:
-    void toStringOpen(std::ostream& aStream) const {
+    void toStringOpen(std::ostream& aStream, const size_t aIndentation) const {
         if (!mName.empty()) {
+            std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
             aStream << '<' << mName;
-        }
-        for (const auto& attr : mAttributes) {
-            aStream << ' ' << attr.first;
-            if (!attr.second.empty()) {
-                aStream << "=\"" << attr.second << "\"";
+
+            for (const auto& attr : mAttributes) {
+                aStream << ' ' << attr.first;
+                if (!attr.second.empty()) {
+                    aStream << "=\"" << attr.second << "\"";
+                }
             }
-        }
-        if (!mName.empty()) {
+
             if (mContent.empty()) {
-                if (mChildren.empty() && !mbNonVoid) {
-                    aStream << "/>\n";
-                } else {
+                if (mbNonVoid) {
+                    aStream << ">";
+                } else if (!mChildren.empty()) {
                     aStream << ">\n";
+                } else {
+                    aStream << "/>\n";
                 }
             } else {
                 aStream << '>';
             }
         }
     }
-    void toStringContent(std::ostream& aStream) const {
-        aStream << mContent;
-        for (auto& child : mChildren) {
-            aStream << child;
+    void toStringContent(std::ostream& aStream, const size_t aIndentation) const {
+        if (!mName.empty()) {
+            aStream << mContent;
+            for (auto& child : mChildren) {
+                child.toString(aStream, aIndentation + 2);
+            }
+        } else {
+            std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
+            aStream << mContent << '\n';
         }
     }
-    void toStringClose(std::ostream& aStream) const {
-        if ((!mContent.empty() || !mChildren.empty() || mbNonVoid) && !mName.empty()) {
-            aStream << "</" << mName << ">\n";
+    void toStringClose(std::ostream& aStream, const size_t aIndentation) const {
+        if (!mName.empty()) {
+            if (!mChildren.empty()) {
+                std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
+            }
+            if (!mContent.empty() || !mChildren.empty() || mbNonVoid) {
+                aStream << "</" << mName << ">\n";
+            }
         }
     }
 
@@ -276,9 +290,7 @@ public:
 
 class Row : public Element {
 public:
-    Row() : Element("tr") {
-        mbNonVoid = true;
-    }
+    Row() : Element("tr") {}
 
     Row&& operator<<(Element&& aElement) = delete;
     Row&& operator<<(Col&& aCol) {
@@ -326,8 +338,8 @@ public:
 
 class Input : public Element {
 public:
-    explicit Input(const char* apType, const char* apName = nullptr, const char* apValue = nullptr, const char* apContent = nullptr) :
-        Element("input", apContent) {
+    explicit Input(const char* apType, const char* apName = nullptr,
+                   const char* apValue = nullptr, const char* apContent = nullptr) : Element("input", apContent) {
         addAttribute("type", apType);
         if (nullptr != apName) {
             addAttribute("name", apName);
