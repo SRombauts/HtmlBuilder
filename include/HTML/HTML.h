@@ -1,14 +1,21 @@
 /**
-* @file    Main.cpp
-* @ingroup HtmlBuilder
-* @brief   A simple C++ HTML Generator library.
-*
-* Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
-*
-* Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
-* or copy at http://opensource.org/licenses/MIT)
-*/
+ * @file    HTML.h
+ * @ingroup HtmlBuilder
+ * @brief   A simple C++ HTML Generator library.
+ *
+ * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ *
+ * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
+ * or copy at http://opensource.org/licenses/MIT)
+ */
 #pragma once
+
+/**
+ * @defgroup HtmlBuilder HtmlBuilder
+ * @brief    C++ HTML Builder Library
+ *
+ * A simple C++ header-only HTML Generator library, using a Document Object Model (DOM).
+ */
 
 #include "Element.h"
 #include "Document.h"

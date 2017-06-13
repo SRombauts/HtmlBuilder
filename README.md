@@ -1,13 +1,13 @@
-C++ Html Builder
-----------------
+HtmlBuilder
+-----------
 
-A simple C++ HTML Generator library.
+A simple C++ header-only HTML Generator library, using a Document Object Model.
 
 Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Building with CMake
 
-This is a header only library, so just include the right folder and go on.
+This is a header only library, so just include the include folder and go on.
 
 ### Get cpplint submodule
 

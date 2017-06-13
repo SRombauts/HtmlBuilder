@@ -1,13 +1,13 @@
 /**
-* @file    Element.h
-* @ingroup HtmlBuilder
-* @brief   Definitions of an Element in the HTML Document Object Model, and various specialized Element types.
-*
-* Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
-*
-* Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
-* or copy at http://opensource.org/licenses/MIT)
-*/
+ * @file    Element.h
+ * @ingroup HtmlBuilder
+ * @brief   Definitions of an Element in the HTML Document Object Model, and various specialized Element types.
+ *
+ * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ *
+ * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
+ * or copy at http://opensource.org/licenses/MIT)
+ */
 #pragma once
 
 #include <sstream>
@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <iterator>
 
+
+/// A simple C++ HTML Generator library.
 namespace HTML {
 
 /**

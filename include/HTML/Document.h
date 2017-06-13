@@ -1,13 +1,13 @@
 /**
-* @file    Document.h
-* @ingroup HtmlBuilder
-* @brief   Root Element of the HTML Document Object Model.
-*
-* Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
-*
-* Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
-* or copy at http://opensource.org/licenses/MIT)
-*/
+ * @file    Document.h
+ * @ingroup HtmlBuilder
+ * @brief   Root Element of the HTML Document Object Model.
+ *
+ * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ *
+ * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
+ * or copy at http://opensource.org/licenses/MIT)
+ */
 #pragma once
 
 #include "Element.h"
@@ -15,14 +15,14 @@
 #include <sstream>
 #include <string>
 
-
+/// A simple C++ HTML Generator library.
 namespace HTML {
 
 /**
  * @brief Root Element of the HTML Document Object Model.
  *
  *   The Document is a specialized Element with restriction on what can be done on it,
- * since many aspects of the <html> root tag are well defined and constrained.
+ * since many aspects of the \<html\> root tag are well defined and constrained.
  */
 class Document : public Element {
 public:
@@ -76,8 +76,8 @@ private:
     }
 
 private:
-    Head& mHead; ///< Reference to the first child <head> Element
-    Body& mBody; ///< Reference to the second child <body> Element
+    Head& mHead; ///< Reference to the first child Element \<head\>
+    Body& mBody; ///< Reference to the second child Element \<body\>
 };
 
 inline std::ostream& operator<< (std::ostream& aStream, const Document& aDocument) {
