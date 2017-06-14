@@ -312,22 +312,18 @@ public:
     }
 };
 
-class Item : public Element {
-public:
-    explicit Item(const char* apContent) : Element("li", apContent) {}
-    explicit Item(const std::string& aContent) : Element("li", aContent) {}
-};
+/// List Element to use with ListItem
 class List : public Element {
 public:
     explicit List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
-
-    Element&& operator<<(Element&& aElement) = delete;
-    Element&& operator<<(Item&& aItem) {
-        mChildren.push_back(std::move(aItem));
-        return std::move(*this);
-    }
 };
 
+/// ListItem Element to put in List
+class ListItem : public Element {
+public:
+    explicit ListItem(const char* apContent = nullptr) : Element("li", apContent) {}
+    explicit ListItem(const std::string& aContent) : Element("li", aContent) {}
+};
 
 class Form : public Element {
 public:
@@ -340,9 +336,11 @@ public:
 
 class Input : public Element {
 public:
-    explicit Input(const char* apType, const char* apName = nullptr,
+    explicit Input(const char* apType = nullptr, const char* apName = nullptr,
                    const char* apValue = nullptr, const char* apContent = nullptr) : Element("input", apContent) {
-        addAttribute("type", apType);
+        if (nullptr != apType) {
+            addAttribute("type", apType);
+        }
         if (nullptr != apName) {
             addAttribute("name", apName);
         }
@@ -352,11 +350,11 @@ public:
     }
 
     Input&& addAttribute(const char* apName, const std::string& aValue) {
-        mAttributes[apName] = aValue;
+        Element::addAttribute(apName, aValue);
         return std::move(*this);
     }
     Input&& addAttribute(const char* apName, const unsigned int aValue) {
-        mAttributes[apName] = std::to_string(aValue);
+        Element::addAttribute(apName, aValue);
         return std::move(*this);
     }
 
@@ -385,7 +383,13 @@ public:
     Input&& min(const std::string& aMin) {
         return addAttribute("min", aMin);
     }
+    Input&& min(const unsigned int aMin) {
+        return addAttribute("min", aMin);
+    }
     Input&& max(const std::string& aMax) { // NOLINT(build/include_what_you_use) false positive
+        return addAttribute("max", aMax);
+    }
+    Input&& max(const unsigned int aMax) { // NOLINT(build/include_what_you_use) false positive
         return addAttribute("max", aMax);
     }
 
@@ -430,6 +434,25 @@ class InputText : public Input {
 public:
     explicit InputText(const char* apName, const char* apValue = nullptr) :
         Input("text", apName, apValue) {
+    }
+};
+
+class TextArea : public Element {
+public:
+    explicit TextArea(const char* apName, const unsigned int aCols = 0, const unsigned int aRows = 0) :
+        Element("textarea") {
+        addAttribute("name", apName);
+        if (0 < aCols) {
+            addAttribute("cols", aCols);
+        }
+        if (0 < aRows) {
+            addAttribute("rows", aRows);
+        }
+        mbNonVoid = true;
+    }
+    TextArea&& maxlength(const unsigned int aMaxlength) {
+        addAttribute("maxlength", aMaxlength);
+        return std::move(*this);
     }
 };
 
@@ -493,6 +516,45 @@ class InputReset : public Input {
 public:
     explicit InputReset(const char* apValue = nullptr) :
         Input("reset", nullptr, apValue) {
+    }
+};
+
+class InputList : public Input {
+public:
+    explicit InputList(const char* apName, const char* apList) : Input(nullptr, apName) {
+        addAttribute("list", apList);
+    }
+};
+
+/// DataList Element for InputList, to use with Option Elements
+class DataList : public Element {
+public:
+    explicit DataList(const char* apId) : Element("datalist") {
+        addAttribute("id", apId);
+    }
+};
+
+/// Select Element to use with Option Elements
+class Select : public Element {
+public:
+    explicit Select(const char* apName) : Element("select") {
+        addAttribute("name", apName);
+    }
+};
+
+/// Option Element for Select and DataList
+class Option : public Element {
+public:
+    explicit Option(const char* apValue, const char* apContent = nullptr) : Element("option", apContent) {
+        addAttribute("value", apValue);
+        mbNonVoid = true;
+    }
+
+    Option&& selected(const bool abSelected = true) {
+        if (abSelected) {
+            addAttribute("selected", "");
+        }
+        return std::move(*this);
     }
 };
 
@@ -613,8 +675,12 @@ public:
         Element("img") {
         addAttribute("src", aSrc);
         addAttribute("alt", aAlt);
-        addAttribute("width", aWidth);
-        addAttribute("height", aHeight);
+        if (0 < aWidth) {
+            addAttribute("width", aWidth);
+        }
+        if (0 < aHeight) {
+            addAttribute("height", aHeight);
+        }
     }
 };
 

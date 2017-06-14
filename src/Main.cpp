@@ -27,6 +27,11 @@ int main() {
     document << (HTML::Paragraph("A paragraphe. ").addAttribute("attr", "val")
                  << HTML::Text("Text child.") << HTML::Break() << HTML::Text("And more text."));
 
+    document << (HTML::List()
+                 << (HTML::ListItem("Text item"))
+                 << (HTML::ListItem() << HTML::Link("Github Link", "http://srombauts.github.io").title("SRombaut's Github home page"))
+                 );
+
     document << (HTML::Table()
         << (HTML::Row() << HTML::Col("Cell_11") << HTML::Col("Cell_12"))
         << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))

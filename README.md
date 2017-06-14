@@ -1,9 +1,22 @@
 HtmlBuilder
 -----------
 
-A simple C++ header-only HTML Generator library, using a Document Object Model.
+A simple C++ header-only HTML 5 Generator library, using a Document Object Model.
 
 Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+
+## Current status
+
+Currently in active development, for use in a new small open source application.
+
+### Missing features
+
+1. [ ] Encoding of HTML Entities
+2. [ ] More HTML 5 Elements or common Attributes
+3. [ ] Support for HTML Comments
+4. [ ] Support for CSS inline style (this is probably easy)
+
+Javascript inline script is currently out of scope.
 
 ## Building with CMake
 
