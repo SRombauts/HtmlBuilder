@@ -21,6 +21,10 @@
 /// A simple C++ HTML Generator library.
 namespace HTML {
 
+#ifndef HTML_INDENTATION
+#define HTML_INDENTATION 2
+#endif
+
 /**
  * @brief Definitions of an Element in the HTML Document Object Model, and various specialized Element types.
  *
@@ -115,7 +119,7 @@ private:
         if (!mName.empty()) {
             aStream << mContent;
             for (auto& child : mChildren) {
-                child.toString(aStream, aIndentation + 2);
+                child.toString(aStream, aIndentation + HTML_INDENTATION);
             }
         } else {
             std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
