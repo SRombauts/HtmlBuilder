@@ -33,6 +33,7 @@ int main() {
                  );
 
     document << (HTML::Table()
+        << (HTML::Row() << HTML::ColHeader("A") << HTML::ColHeader("B"))
         << (HTML::Row() << HTML::Col("Cell_11") << HTML::Col("Cell_12"))
         << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))
         << (HTML::Row() << HTML::Col("") << HTML::Col("Cell_32")));

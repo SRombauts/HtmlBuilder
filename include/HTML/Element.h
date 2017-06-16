@@ -268,6 +268,32 @@ public:
     Break() : Element("br") {}
 };
 
+class ColHeader : public Element {
+public:
+    explicit ColHeader(const char* apContent = nullptr) : Element("th", apContent) {
+        mbNonVoid = true;
+    }
+    explicit ColHeader(std::string&& aContent) : Element("th", aContent) {
+        mbNonVoid = true;
+    }
+    explicit ColHeader(const std::string& aContent) : Element("th", aContent) {
+        mbNonVoid = true;
+    }
+
+    ColHeader&& rowSpan(const unsigned int aNbRow) {
+        if (0 < aNbRow) {
+            addAttribute("rowspan", aNbRow);
+        }
+        return std::move(*this);
+    }
+    ColHeader&& colSpan(const unsigned int aNbCol) {
+        if (0 < aNbCol) {
+            addAttribute("colspan", aNbCol);
+        }
+        return std::move(*this);
+    }
+};
+
 class Col : public Element {
 public:
     explicit Col(const char* apContent = nullptr) : Element("td", apContent) {
@@ -299,6 +325,10 @@ public:
     Row() : Element("tr") {}
 
     Row&& operator<<(Element&& aElement) = delete;
+    Row&& operator<<(ColHeader&& aCol) {
+        mChildren.push_back(std::move(aCol));
+        return std::move(*this);
+    }
     Row&& operator<<(Col&& aCol) {
         mChildren.push_back(std::move(aCol));
         return std::move(*this);
