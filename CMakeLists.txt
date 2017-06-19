@@ -97,11 +97,14 @@ target_link_libraries(HtmlBuilder ${SYSTEM_LIBRARIES})
 
 option(RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." ON)
 if (RUN_CPPLINT)
-    # add a cpplint target to the "all" target
-    add_custom_target(cpplint
-     ALL
-     COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${headers_files}
-    )
+    find_package(PythonInterp)
+    if (PYTHONINTERP_FOUND)
+        # add a cpplint target to the "all" target
+        add_custom_target(cpplint
+         ALL
+         COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${headers_files}
+        )
+    endif (PYTHONINTERP_FOUND)
 else (RUN_CPPLINT)
     message(STATUS "RUN_CPPLINT OFF")
 endif (RUN_CPPLINT)
