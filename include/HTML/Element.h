@@ -193,7 +193,7 @@ public:
     }
 };
 
-/// \<meta\> Element in \<head\>
+/// \<meta\> metadata about the Document in \<head\>
 class Meta : public Element {
 public:
     explicit Meta(const char* apCharset) : Element("meta") {
@@ -639,13 +639,13 @@ public:
     explicit Header3(const std::string& aContent) : Element("h3", aContent) {}
 };
 
-/// \<b\> Element
+/// \<b\> bold Element
 class Bold : public Element {
 public:
     explicit Bold(const std::string& aContent) : Element("b", aContent) {}
 };
 
-/// \<i\> Element
+/// \<i\> italic Element
 class Italic : public Element {
 public:
     explicit Italic(const std::string& aContent) : Element("i", aContent) {}
@@ -657,22 +657,28 @@ public:
     explicit Strong(const std::string& aContent) : Element("strong", aContent) {}
 };
 
-/// \<p\> Element
+/// \<p\> paragraph Element
 class Paragraph : public Element {
 public:
     explicit Paragraph(const std::string& aContent) : Element("p", aContent) {}
 };
 
-/// \<div\> Element
+/// \<div\> division Element to group elements in a rectangular block.
 class Div : public Element {
 public:
     explicit Div(const std::string& aContent) : Element("div", aContent) {}
 };
 
-/// \<span\> Element
+/// \<span\> Element to group inline-elements in a document.
 class Span : public Element {
 public:
     explicit Span(const std::string& aContent) : Element("span", aContent) {}
+};
+
+/// \<pre\> pre-formatted Element to display text in mono-space font.
+class Pre : public Element {
+public:
+    explicit Pre(const std::string& aContent) : Element("pre", aContent) {}
 };
 
 /// \<a\> Hyper-Link Element
