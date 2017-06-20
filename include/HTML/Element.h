@@ -79,7 +79,7 @@ public:
     }
 
 protected:
-    /// Constructor reserved for the Root Element
+    /// Constructor reserved for the Root \<html\> Element
     Element();
 
     std::ostream& toString(std::ostream& aStream, const size_t aIndentation = 0) const {
@@ -149,6 +149,7 @@ inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) 
     return aElement.toString(aStream);
 }
 
+/// Raw content text (unnamed Element) to use as text values between child Elements
 class Text : public Element {
 public:
     explicit Text(const char* apContent) : Element("", apContent) {}
@@ -168,19 +169,21 @@ inline Element&& Element::operator<<(const std::string& aContent) {
     return *this << Text(aContent);
 }
 
-
+/// \<title\> Element required in \<head\>
 class Title : public Element {
 public:
     explicit Title(const char* apContent) : Element("title", apContent) {}
     explicit Title(const std::string& aContent) : Element("title", aContent) {}
 };
 
+/// \<style\> Element for inline CSS in \<head\>
 class Style : public Element {
 public:
     explicit Style(const char* apContent) : Element("style", apContent) {}
     explicit Style(const std::string& aContent) : Element("style", aContent) {}
 };
 
+/// \<script\> Element for inline Javascript in \<head\>
 class Script : public Element {
 public:
     explicit Script(const char* apSrc, const char* apContent = nullptr) : Element("script", apContent) {
@@ -190,6 +193,7 @@ public:
     }
 };
 
+/// \<meta\> Element in \<head\>
 class Meta : public Element {
 public:
     explicit Meta(const char* apCharset) : Element("meta") {
@@ -201,6 +205,7 @@ public:
     }
 };
 
+/// \<link\> Element to reference external CSS or Javascript files in \<head\>
 class Rel : public Element {
 public:
     Rel(const char* apRel, const char* apUrl, const char* apType = nullptr) : Element("link") {
@@ -212,6 +217,7 @@ public:
     }
 };
 
+/// \<base\> Element in \<head\>
 class Base : public Element {
 public:
     Base(const std::string& aContent, const std::string& aUrl, const char* apTarget) : Element("base", aContent) {
@@ -222,6 +228,7 @@ public:
     }
 };
 
+/// \<head\> required as the first child Element in every HTML Document
 class Head : public Element {
 public:
     Head() : Element("head") {}
@@ -253,21 +260,24 @@ public:
     }
 };
 
+/// \<body\> required as the second child Element in every HTML Document
 class Body : public Element {
 public:
     Body() : Element("body") {}
 };
 
-// Constructor of the Root Element
+// Constructor of the Root \<html\> Element
 inline Element::Element() : mName("html"), mChildren{Head(), Body()} {
 }
 
 
+/// \<br\> Line break Element
 class Break : public Element {
 public:
     Break() : Element("br") {}
 };
 
+/// \<th\> Table Header Column Element
 class ColHeader : public Element {
 public:
     explicit ColHeader(const char* apContent = nullptr) : Element("th", apContent) {
@@ -294,6 +304,7 @@ public:
     }
 };
 
+/// \<td\> Table Column Element
 class Col : public Element {
 public:
     explicit Col(const char* apContent = nullptr) : Element("td", apContent) {
@@ -320,6 +331,7 @@ public:
     }
 };
 
+/// \<tr\> Table Row Element
 class Row : public Element {
 public:
     Row() : Element("tr") {}
@@ -335,6 +347,7 @@ public:
     }
 };
 
+/// \<table\> Element
 class Table : public Element {
 public:
     Table() : Element("table") {}
@@ -346,19 +359,20 @@ public:
     }
 };
 
-/// List Element to use with ListItem
+/// \<ol\> Ordered List or \<ul\> Unordered List Element to use with ListItem
 class List : public Element {
 public:
     explicit List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
 };
 
-/// ListItem Element to put in List
+/// \<li\> List Item Element to put in List
 class ListItem : public Element {
 public:
     explicit ListItem(const char* apContent = nullptr) : Element("li", apContent) {}
     explicit ListItem(const std::string& aContent) : Element("li", aContent) {}
 };
 
+/// \<form\> Element
 class Form : public Element {
 public:
     explicit Form(const char* apAction = nullptr) : Element("form") {
@@ -368,6 +382,7 @@ public:
     }
 };
 
+/// \<input\> Element to use in Form
 class Input : public Element {
 public:
     explicit Input(const char* apType = nullptr, const char* apName = nullptr,
@@ -450,6 +465,7 @@ public:
     }
 };
 
+/// \<input\> Radio Element to use in Form
 class InputRadio : public Input {
 public:
     explicit InputRadio(const char* apName, const char* apValue = nullptr, const char* apContent = nullptr) :
@@ -457,6 +473,7 @@ public:
     }
 };
 
+/// \<input\> Checkbox Element to use in Form
 class InputCheckbox : public Input {
 public:
     explicit InputCheckbox(const char* apName, const char* apValue = nullptr, const char* apContent = nullptr) :
@@ -464,6 +481,7 @@ public:
     }
 };
 
+/// \<input\> text Element to use in Form
 class InputText : public Input {
 public:
     explicit InputText(const char* apName, const char* apValue = nullptr) :
@@ -471,6 +489,7 @@ public:
     }
 };
 
+/// \<textarea\> Element to use in Form
 class TextArea : public Element {
 public:
     explicit TextArea(const char* apName, const unsigned int aCols = 0, const unsigned int aRows = 0) :
@@ -490,6 +509,7 @@ public:
     }
 };
 
+/// \<intput\> Number Element to use in Form
 class InputNumber : public Input {
 public:
     explicit InputNumber(const char* apName, const char* apValue = nullptr) :
@@ -497,6 +517,7 @@ public:
     }
 };
 
+/// \<intput\> Range Element to use in Form
 class InputRange : public Input {
 public:
     explicit InputRange(const char* apName, const char* apValue = nullptr) :
@@ -504,6 +525,7 @@ public:
     }
 };
 
+/// \<intput\> Date Element to use in Form
 class InputDate : public Input {
 public:
     explicit InputDate(const char* apName, const char* apValue = nullptr) :
@@ -511,6 +533,7 @@ public:
     }
 };
 
+/// \<intput\> Time Element to use in Form
 class InputTime : public Input {
 public:
     explicit InputTime(const char* apName, const char* apValue = nullptr) :
@@ -518,6 +541,7 @@ public:
     }
 };
 
+/// \<intput\> E-mail Element to use in Form
 class InputEmail : public Input {
 public:
     explicit InputEmail(const char* apName, const char* apValue = nullptr) :
@@ -525,6 +549,7 @@ public:
     }
 };
 
+/// \<intput\> URL Element to use in Form
 class InputUrl : public Input {
 public:
     explicit InputUrl(const char* apName, const char* apValue = nullptr) :
@@ -532,6 +557,7 @@ public:
     }
 };
 
+/// \<intput\> Password Element to use in Form
 class InputPassword : public Input {
 public:
     explicit InputPassword(const char* apName) :
@@ -539,6 +565,7 @@ public:
     }
 };
 
+/// \<intput\> Submit Button Element to use in Form
 class InputSubmit : public Input {
 public:
     explicit InputSubmit(const char* apValue = nullptr, const char* apName = nullptr) :
@@ -546,6 +573,7 @@ public:
     }
 };
 
+/// \<intput\> Reset Button Element to use in Form
 class InputReset : public Input {
 public:
     explicit InputReset(const char* apValue = nullptr) :
@@ -553,6 +581,7 @@ public:
     }
 };
 
+/// \<intput\> List Element to use in Form with DataList
 class InputList : public Input {
 public:
     explicit InputList(const char* apName, const char* apList) : Input(nullptr, apName) {
@@ -560,7 +589,7 @@ public:
     }
 };
 
-/// DataList Element for InputList, to use with Option Elements
+/// \<datalist\> Element for InputList, to use with Option Elements
 class DataList : public Element {
 public:
     explicit DataList(const char* apId) : Element("datalist") {
@@ -568,7 +597,7 @@ public:
     }
 };
 
-/// Select Element to use with Option Elements
+/// \<select\> Element to use with Option Elements
 class Select : public Element {
 public:
     explicit Select(const char* apName) : Element("select") {
@@ -576,7 +605,7 @@ public:
     }
 };
 
-/// Option Element for Select and DataList
+/// \<option\> Element for Select and DataList
 class Option : public Element {
 public:
     explicit Option(const char* apValue, const char* apContent = nullptr) : Element("option", apContent) {
@@ -592,110 +621,61 @@ public:
     }
 };
 
+/// \<h1\> Element
 class Header1 : public Element {
 public:
     explicit Header1(const std::string& aContent) : Element("h1", aContent) {}
 };
 
+/// \<h2\> Element
 class Header2 : public Element {
 public:
     explicit Header2(const std::string& aContent) : Element("h2", aContent) {}
 };
 
+/// \<h3\> Element
 class Header3 : public Element {
 public:
     explicit Header3(const std::string& aContent) : Element("h3", aContent) {}
 };
 
+/// \<b\> Element
 class Bold : public Element {
 public:
     explicit Bold(const std::string& aContent) : Element("b", aContent) {}
 };
 
+/// \<i\> Element
 class Italic : public Element {
 public:
     explicit Italic(const std::string& aContent) : Element("i", aContent) {}
 };
 
+/// \<strong\> Element
 class Strong : public Element {
 public:
     explicit Strong(const std::string& aContent) : Element("strong", aContent) {}
 };
 
-class Mark : public Element {
-public:
-    explicit Mark(const std::string& aContent) : Element("mark", aContent) {}
-};
-
+/// \<p\> Element
 class Paragraph : public Element {
 public:
     explicit Paragraph(const std::string& aContent) : Element("p", aContent) {}
 };
 
+/// \<div\> Element
 class Div : public Element {
 public:
     explicit Div(const std::string& aContent) : Element("div", aContent) {}
 };
 
+/// \<span\> Element
 class Span : public Element {
 public:
     explicit Span(const std::string& aContent) : Element("span", aContent) {}
 };
 
-class Header : public Element {
-public:
-    Header() : Element("header") {}
-};
-
-class Footer : public Element {
-public:
-    Footer() : Element("footer") {}
-};
-
-class Section : public Element {
-public:
-    Section() : Element("section") {}
-};
-
-class Article : public Element {
-public:
-    Article() : Element("article") {}
-};
-
-class Nav : public Element {
-public:
-    Nav() : Element("nav") {}
-};
-
-class Aside : public Element {
-public:
-    Aside() : Element("aside") {}
-};
-
-class Main : public Element {
-public:
-    Main() : Element("main") {}
-};
-
-class Figure : public Element {
-public:
-    Figure() : Element("figure") {}
-};
-
-class FigCaption : public Element {
-public:
-    explicit FigCaption(const std::string& aContent) : Element("figcaption", aContent) {}
-};
-class Details : public Element {
-public:
-    Details() : Element("details") {}
-};
-
-class Summary : public Element {
-public:
-    explicit Summary(const std::string& aContent) : Element("summary", aContent) {}
-};
-
+/// \<a\> Hyper-Link Element
 class Link : public Element {
 public:
     Link(const std::string& aContent, const std::string& aUrl) : Element("a", aContent) {
@@ -703,6 +683,7 @@ public:
     }
 };
 
+/// \<img\> Image Element
 class Image : public Element {
 public:
     Image(const std::string& aSrc, const std::string& aAlt, unsigned int aWidth = 0, unsigned int aHeight = 0) :
@@ -717,5 +698,98 @@ public:
         }
     }
 };
+
+/// \<mark\> semantic Element
+class Mark : public Element {
+public:
+    explicit Mark(const std::string& aContent) : Element("mark", aContent) {}
+};
+
+/// \<time\> semantic Element
+class Time : public Element {
+public:
+    explicit Time(const std::string& aContent, const std::string& aDateTime) : Element("time", aContent) {
+        addAttribute("datetime", aDateTime);
+    }
+};
+
+/// \<header\> semantic Element
+class Header : public Element {
+public:
+    Header() : Element("header") {}
+};
+
+/// \<footer\> semantic Element
+class Footer : public Element {
+public:
+    Footer() : Element("footer") {}
+};
+
+/// \<section\> semantic Element
+class Section : public Element {
+public:
+    Section() : Element("section") {}
+};
+
+/// \<article\> semantic Element
+class Article : public Element {
+public:
+    Article() : Element("article") {}
+};
+
+/// \<nav\> semantic Element
+class Nav : public Element {
+public:
+    Nav() : Element("nav") {}
+};
+
+/// \<aside\> semantic Element
+class Aside : public Element {
+public:
+    Aside() : Element("aside") {}
+};
+
+/// \<main\> semantic Element
+class Main : public Element {
+public:
+    Main() : Element("main") {}
+};
+
+/// \<figure\> semantic Element
+class Figure : public Element {
+public:
+    Figure() : Element("figure") {}
+};
+
+/// \<figcaption\> semantic Element to use with Figure
+class FigCaption : public Element {
+public:
+    explicit FigCaption(const std::string& aContent) : Element("figcaption", aContent) {}
+};
+
+/** @brief \<details\> semantic Element containing detailed information to use with Summary.
+ *
+ * @verbatim
+<details>
+  <summary>Copyright 2017.</summary>
+  <p>By Sébastien Rombauts.</p>
+  <p>sebastien.rombauts@gmail.com.</p>
+</details> @endverbatim
+ */
+class Details : public Element {
+public:
+    Details(const char* apOpen = nullptr) : Element("details") {
+        if (nullptr != apOpen) {
+            addAttribute("open", apOpen);
+        }
+    }
+};
+
+/// \<summary\> semantic Element to use inside a Details section to specify a visible heading
+class Summary : public Element {
+public:
+    explicit Summary(const std::string& aContent) : Element("summary", aContent) {}
+};
+
 
 } // namespace HTML

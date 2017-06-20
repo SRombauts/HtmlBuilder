@@ -19,7 +19,7 @@
 namespace HTML {
 
 /**
- * @brief Root Element of the HTML Document Object Model.
+ * @brief Root Element \<html\> of the HTML Document Object Model.
  *
  *   The Document is a specialized Element with restriction on what can be done on it,
  * since many aspects of the \<html\> root tag are well defined and constrained.
