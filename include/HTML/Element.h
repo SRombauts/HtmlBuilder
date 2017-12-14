@@ -25,6 +25,12 @@ namespace HTML {
 #define HTML_INDENTATION 2
 #endif
 
+/// Convert a boolean to string like std::boolalpha in a std::ostream
+constexpr const char* to_string(bool aBool)
+{
+  return aBool ? "true" : "false";
+}
+
 /**
  * @brief Definitions of an Element in the HTML Document Object Model, and various specialized Element types.
  *
