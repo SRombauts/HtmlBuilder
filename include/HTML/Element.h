@@ -705,6 +705,27 @@ public:
     }
 };
 
+/// \<progress\> Element
+class Progress : public Element {
+public:
+    Progress(const unsigned int aValue, const unsigned int aMax) : Element("progress") {
+        addAttribute("value", aValue);
+        addAttribute("max", aMax);
+        mbNonVoid = true;
+    }
+};
+
+/// \<meter\> gauge Element
+class Meter : public Element {
+public:
+   Meter(const unsigned int aValue, const unsigned int aMin, const unsigned int aMax) : Element("meter") {
+        addAttribute("value", aValue);
+        addAttribute("min", aMin);
+        addAttribute("max", aMax);
+        mbNonVoid = true;
+    }
+};
+
 /// \<mark\> semantic Element
 class Mark : public Element {
 public:
