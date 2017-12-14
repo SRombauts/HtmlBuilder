@@ -187,7 +187,7 @@ public:
 class Script : public Element {
 public:
     explicit Script(const char* apSrc, const char* apContent = nullptr) : Element("script", apContent) {
-        if (nullptr != apSrc) {
+        if (apSrc) {
             addAttribute("src", apSrc);
         }
     }
@@ -211,7 +211,7 @@ public:
     Rel(const char* apRel, const char* apUrl, const char* apType = nullptr) : Element("link") {
         addAttribute("rel", apRel);
         addAttribute("href", apUrl);
-        if (nullptr != apType) {
+        if (apType) {
             addAttribute("type", apType);
         }
     }
@@ -222,7 +222,7 @@ class Base : public Element {
 public:
     Base(const std::string& aContent, const std::string& aUrl, const char* apTarget) : Element("base", aContent) {
         addAttribute("href", aUrl);
-        if (nullptr != apTarget) {
+        if (apTarget) {
             addAttribute("target", apTarget);
         }
     }
@@ -376,7 +376,7 @@ public:
 class Form : public Element {
 public:
     explicit Form(const char* apAction = nullptr) : Element("form") {
-        if (nullptr != apAction) {
+        if (apAction) {
             addAttribute("action", apAction);
         }
     }
@@ -387,13 +387,13 @@ class Input : public Element {
 public:
     explicit Input(const char* apType = nullptr, const char* apName = nullptr,
                    const char* apValue = nullptr, const char* apContent = nullptr) : Element("input", apContent) {
-        if (nullptr != apType) {
+        if (apType) {
             addAttribute("type", apType);
         }
-        if (nullptr != apName) {
+        if (apName) {
             addAttribute("name", apName);
         }
-        if (nullptr != apValue) {
+        if (apValue) {
             addAttribute("value", apValue);
         }
     }
@@ -784,8 +784,8 @@ public:
  */
 class Details : public Element {
 public:
-    Details(const char* apOpen = nullptr) : Element("details") {
-        if (nullptr != apOpen) {
+    explicit Details(const char* apOpen = nullptr) : Element("details") {
+        if (apOpen) {
             addAttribute("open", apOpen);
         }
     }

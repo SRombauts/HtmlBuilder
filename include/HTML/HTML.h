@@ -12,9 +12,7 @@
 
 /**
  * @defgroup HtmlBuilder HtmlBuilder
- * @brief    C++ HTML Builder Library
- *
- * A simple C++ header-only HTML Generator library, using a Document Object Model (DOM).
+ * @brief    A simple C++ header-only HTML Generator library, using a Document Object Model (DOM).
  */
 
 #include "Element.h"
