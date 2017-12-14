@@ -45,9 +45,9 @@ public:
         mHead << Style(aStyle);
     }
 
-    Element& operator<<(Element&& aElement) {
+    Document& operator<<(Element&& aElement) {
         mBody << std::move(aElement);
-        return mBody;
+        return *this;
     }
 
     Element& head() {
@@ -62,10 +62,15 @@ public:
     }
 
     friend std::ostream& operator<< (std::ostream& aStream, const Document& aElement);
+
     std::string toString() const {
         std::ostringstream stream;
         stream << *this;
         return stream.str();
+    }
+
+    operator std::string() const {
+        return toString();
     }
 
 private:
