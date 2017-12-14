@@ -155,6 +155,12 @@ inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) 
     return aElement.toString(aStream);
 }
 
+/// Empty Element, useful as a default parameter for instance
+class Empty : public Element {
+public:
+   explicit Empty() : Element("") {}
+};
+
 /// Raw content text (unnamed Element) to use as text values between child Elements
 class Text : public Element {
 public:
