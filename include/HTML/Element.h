@@ -778,7 +778,7 @@ public:
  * @verbatim
 <details>
   <summary>Copyright 2017.</summary>
-  <p>By Sébastien Rombauts.</p>
+  <p>By Sebastien Rombauts.</p>
   <p>sebastien.rombauts@gmail.com.</p>
 </details> @endverbatim
  */
