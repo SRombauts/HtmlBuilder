@@ -7,14 +7,13 @@ Copyright (c) 2017 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Current status
 
-Currently in active development, for use in a new small open source application.
+Deployed in production in a small application.
 
 ### Missing features
 
-1. [ ] Encoding of HTML Entities
-2. [ ] More HTML 5 Elements or common Attributes
-3. [ ] Support for HTML Comments
-4. [ ] Support for CSS inline style (this is probably easy)
+1. [ ] Encoding of **HTML Entities** *(special chars)*
+2. [ ] Support for HTML Comments
+3. [ ] Support for CSS inline style (this is probably easy)
 
 Javascript inline script is currently out of scope.
 
