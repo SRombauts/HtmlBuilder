@@ -16,7 +16,7 @@
 #include <map>
 #include <algorithm>
 #include <iterator>
-
+#include <utility>
 
 /// A simple C++ HTML Generator library.
 namespace HTML {
@@ -158,7 +158,7 @@ inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) 
 /// Empty Element, useful as a default parameter for instance
 class Empty : public Element {
 public:
-   explicit Empty() : Element("") {}
+   Empty() : Element("") {}
 };
 
 /// Raw content text (unnamed Element) to use as text values between child Elements

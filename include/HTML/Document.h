@@ -14,6 +14,7 @@
 
 #include <sstream>
 #include <string>
+#include <utility>
 
 /// A simple C++ HTML Generator library.
 namespace HTML {
