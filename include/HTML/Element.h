@@ -341,6 +341,10 @@ public:
         }
         return std::move(*this);
     }
+    Col&& style(const std::string& aValue) {
+        Element::style(aValue);
+        return std::move(*this);
+    }
 };
 
 /// \<tr\> Table Row Element
@@ -356,6 +360,10 @@ public:
     Row&& operator<<(Col&& aCol) {
         mChildren.push_back(std::move(aCol));
         return std::move(*this);
+    }
+    Row&& style(const std::string& aValue) {
+       Element::style(aValue);
+       return std::move(*this);
     }
 };
 
