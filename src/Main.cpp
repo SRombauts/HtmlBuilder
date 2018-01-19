@@ -25,12 +25,14 @@ int main() {
     document << HTML::Paragraph("This is the way to go for a big text in a multiline paragraph.");
     document << HTML::Link("Google", "http://google.com").cls("my_style");
     document << (HTML::Paragraph("A paragraphe. ").addAttribute("attr", "val")
-                 << HTML::Text("Text child.") << HTML::Break() << HTML::Text("And more text."));
+        << HTML::Text("Text child.") << HTML::Break() << HTML::Text("And more text."));
 
     document << (HTML::List()
-                 << (HTML::ListItem("Text item"))
-                 << (HTML::ListItem() << HTML::Link("Github Link", "http://srombauts.github.io").title("SRombaut's Github home page"))
-                 );
+        << (HTML::ListItem("Text item"))
+        << (HTML::ListItem() << HTML::Link("Github Link", "http://srombauts.github.io").title("SRombaut's Github home page"))
+        << (HTML::ListItem() << (HTML::List()
+                << HTML::ListItem("val1")
+                << HTML::ListItem("val2"))));
 
     document << (HTML::Table()
         << (HTML::Row() << HTML::ColHeader("A") << HTML::ColHeader("B"))

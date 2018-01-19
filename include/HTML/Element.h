@@ -26,9 +26,8 @@ namespace HTML {
 #endif
 
 /// Convert a boolean to string like std::boolalpha in a std::ostream
-constexpr const char* to_string(bool aBool)
-{
-  return aBool ? "true" : "false";
+constexpr const char* to_string(bool aBool) {
+    return aBool ? "true" : "false";
 }
 
 /**
@@ -158,7 +157,7 @@ inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) 
 /// Empty Element, useful as a default parameter for instance
 class Empty : public Element {
 public:
-   Empty() : Element("") {}
+    Empty() : Element("") {}
 };
 
 /// Raw content text (unnamed Element) to use as text values between child Elements
@@ -362,8 +361,8 @@ public:
         return std::move(*this);
     }
     Row&& style(const std::string& aValue) {
-       Element::style(aValue);
-       return std::move(*this);
+        Element::style(aValue);
+        return std::move(*this);
     }
 };
 
@@ -372,9 +371,21 @@ class Table : public Element {
 public:
     Table() : Element("table") {}
 
-    Element&& operator<<(Element&& aElement) = delete;
-    Element&& operator<<(Row&& aRow) {
+    Table&& operator<<(Element&& aElement) = delete;
+    Table&& operator<<(Row&& aRow) {
         mChildren.push_back(std::move(aRow));
+        return std::move(*this);
+    }
+};
+
+/// \<li\> List Item Element to put in List
+class ListItem : public Element {
+public:
+    explicit ListItem(const char* apContent = nullptr) : Element("li", apContent) {}
+    explicit ListItem(const std::string& aContent) : Element("li", aContent) {}
+
+    ListItem&& operator<<(Element&& aElement) {
+        mChildren.push_back(std::move(aElement));
         return std::move(*this);
     }
 };
@@ -383,13 +394,12 @@ public:
 class List : public Element {
 public:
     explicit List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
-};
 
-/// \<li\> List Item Element to put in List
-class ListItem : public Element {
-public:
-    explicit ListItem(const char* apContent = nullptr) : Element("li", apContent) {}
-    explicit ListItem(const std::string& aContent) : Element("li", aContent) {}
+    List&& operator<<(Element&& aElement) = delete;
+    List&& operator<<(ListItem&& aItem) {
+        mChildren.push_back(std::move(aItem));
+        return std::move(*this);
+    }
 };
 
 /// \<form\> Element
@@ -738,7 +748,7 @@ public:
 /// \<meter\> gauge Element
 class Meter : public Element {
 public:
-   Meter(const unsigned int aValue, const unsigned int aMin, const unsigned int aMax) : Element("meter") {
+    Meter(const unsigned int aValue, const unsigned int aMin, const unsigned int aMax) : Element("meter") {
         addAttribute("value", aValue);
         addAttribute("min", aMin);
         addAttribute("max", aMax);
