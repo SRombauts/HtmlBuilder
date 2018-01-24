@@ -3,7 +3,7 @@
  * @ingroup HtmlBuilder
  * @brief   Definitions of an Element in the HTML Document Object Model, and various specialized Element types.
  *
- * Copyright (c) 2017 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2017-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -828,7 +828,7 @@ public:
  *
  * @verbatim
 <details>
-  <summary>Copyright 2017.</summary>
+  <summary>Copyright 2017-2018.</summary>
   <p>By Sebastien Rombauts.</p>
   <p>sebastien.rombauts@gmail.com.</p>
 </details> @endverbatim
