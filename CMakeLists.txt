@@ -106,7 +106,7 @@ if (RUN_CPPLINT)
         # add a cpplint target to the "all" target
         add_custom_target(cpplint
          ALL
-         COMMAND python ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${headers_files}
+         COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${headers_files}
         )
     endif (PYTHONINTERP_FOUND)
 else (RUN_CPPLINT)
