@@ -87,7 +87,7 @@ set(doc_files
  ${CMAKE_SOURCE_DIR}/README.md
  ${CMAKE_SOURCE_DIR}/LICENSE.txt
 )
-source_group(doc      FILES ${doc_files})
+#source_group(doc      FILES ${doc_files})
 
 # All includes are relative to the "include" directory
 include_directories("${PROJECT_SOURCE_DIR}/include")
