@@ -21,11 +21,13 @@ Javascript inline script is currently out of scope.
 
 The following example is provided in src/Main.cpp.
 
-```
+### Source Code
+
+```cpp
     HTML::Document document("Welcome to HTML");
 	document.addAttribute("lang", "en");
-    document << HTML::Header1("Welcome to HTML");
-    document.body() << "Text directly in the body. ";
+    document << HTML::Header2("Generated HTML") << HTML::Break() << HTML::Break();
+    document.body() << "Which results in the following HTML page (truncated to fit in this README): ";
     document << HTML::Text("Text directly in the body. ") << HTML::Text("Text directly in the body.") << HTML::Break()
         << HTML::Text("Text directly in the body.");
     document << HTML::Paragraph("This is the way to go for a big text in a multiline paragraph.");
@@ -46,6 +48,51 @@ The following example is provided in src/Main.cpp.
         << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))
         << (HTML::Row() << HTML::Col("") << HTML::Col("Cell_32")));
 ```
+
+### Generated HTML
+
+Which results in the following HTML page (truncated to fit in this README):
+
+Text directly in the body. Text directly in the body.
+<br/>
+Text directly in the body.
+<p>This is the way to go for a big text in a multiline paragraph.</p>
+<a class="my_style" href="http://google.com">Google</a>
+<p style="font-family:arial">A paragraphe.       Text child.
+    <br/>
+    And more text.
+</p>
+<ul>
+    <li>Text item</li>
+    <li>
+    <a href="http://srombauts.github.io" title="SRombaut's Github home page">Github Link</a>
+    </li>
+    <li>
+    <ul>
+        <li>val1</li>
+        <li>val2</li>
+    </ul>
+    </li>
+</ul>
+<table>
+    <tr>
+    <th>A</th>
+    <th>B</th>
+    </tr>
+    <tr>
+    <td>Cell_11</td>
+    <td>Cell_12</td>
+    </tr>
+    <tr>
+    <td>Cell_21</td>
+    <td>Cell_22</td>
+    </tr>
+    <tr>
+    <td></td>
+    <td>Cell_32</td>
+    </tr>
+</table>
+
 
 ## Building with CMake
 
