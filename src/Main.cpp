@@ -18,13 +18,14 @@
  */
 int main() {
     HTML::Document document("Welcome to HTML");
+	document.addAttribute("lang", "en");
     document << HTML::Header1("Welcome to HTML");
     document.body() << "Text directly in the body. ";
     document << HTML::Text("Text directly in the body. ") << HTML::Text("Text directly in the body.") << HTML::Break()
         << HTML::Text("Text directly in the body.");
     document << HTML::Paragraph("This is the way to go for a big text in a multiline paragraph.");
     document << HTML::Link("Google", "http://google.com").cls("my_style");
-    document << (HTML::Paragraph("A paragraphe. ").addAttribute("attr", "val")
+    document << (HTML::Paragraph("A paragraphe. ").addAttribute("style", "font-family:arial")
         << HTML::Text("Text child.") << HTML::Break() << HTML::Text("And more text."));
 
     document << (HTML::List()
