@@ -3,7 +3,7 @@
  * @ingroup HtmlBuilder
  * @brief   Definitions of an Element in the HTML Document Object Model, and various specialized Element types.
  *
- * Copyright (c) 2017-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2017-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -405,9 +405,12 @@ public:
 /// \<form\> Element
 class Form : public Element {
 public:
-    explicit Form(const char* apAction = nullptr) : Element("form") {
+    explicit Form(const char* apAction = nullptr, const char* apMethod = nullptr) : Element("form") {
         if (apAction) {
             addAttribute("action", apAction);
+        }
+        if (apMethod) {
+            addAttribute("method", apMethod);
         }
     }
 };
@@ -715,7 +718,14 @@ public:
 class Link : public Element {
 public:
     Link(const std::string& aContent, const std::string& aUrl) : Element("a", aContent) {
-        addAttribute("href", aUrl);
+        if (!aUrl.empty()) {
+            addAttribute("href", aUrl);
+        }
+    }
+    Link(const char* apContent = nullptr, const char* apUrl = nullptr) : Element("a", apContent) {
+        if (apUrl) {
+            addAttribute("href", apUrl);
+        }
     }
 };
 
