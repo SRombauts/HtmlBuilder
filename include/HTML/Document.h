@@ -3,7 +3,7 @@
  * @ingroup HtmlBuilder
  * @brief   Root Element of the HTML Document Object Model.
  *
- * Copyright (c) 2017-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2017-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -28,20 +28,20 @@ namespace HTML {
 class Document : public Element {
 public:
     explicit Document(const char* apTitle) :
-        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        Element(), mHead(*static_cast<Head*>(&mChildren[0])), mBody(*static_cast<Body*>(&mChildren[1])) {
         mHead << HTML::Title(apTitle);
     }
     explicit Document(const std::string& aTitle) :
-        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        Element(), mHead(*static_cast<Head*>(&mChildren[0])), mBody(*static_cast<Body*>(&mChildren[1])) {
         mHead << HTML::Title(aTitle);
     }
     Document(const char* apTitle, Style&& aStyle) :
-        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        Element(), mHead(*static_cast<Head*>(&mChildren[0])), mBody(*static_cast<Body*>(&mChildren[1])) {
         mHead << HTML::Title(apTitle);
         mHead << std::move(aStyle);
     }
     Document(const char* apTitle, const Style& aStyle) :
-        Element(), mHead(*reinterpret_cast<Head*>(&mChildren[0])), mBody(*reinterpret_cast<Body*>(&mChildren[1])) {
+        Element(), mHead(*static_cast<Head*>(&mChildren[0])), mBody(*static_cast<Body*>(&mChildren[1])) {
         mHead << HTML::Title(apTitle);
         mHead << Style(aStyle);
     }
