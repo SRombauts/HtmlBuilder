@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2018 SÃ©bastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2017-2019 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
