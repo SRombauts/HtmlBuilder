@@ -25,7 +25,7 @@ The following example is provided in src/Main.cpp.
 
 ```cpp
     HTML::Document document("Welcome to HTML");
-	document.addAttribute("lang", "en");
+    document.addAttribute("lang", "en");
     document << HTML::Header2("Generated HTML") << HTML::Break() << HTML::Break();
     document.body() << "Which results in the following HTML page (truncated to fit in this README): ";
     document << HTML::Text("Text directly in the body. ") << HTML::Text("Text directly in the body.") << HTML::Break()

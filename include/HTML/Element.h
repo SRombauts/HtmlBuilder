@@ -21,8 +21,12 @@
 /// A simple C++ HTML Generator library.
 namespace HTML {
 
+// Note: to configure indentation & minification, define this at compile time before including HTML headers.
 #ifndef HTML_INDENTATION
 #define HTML_INDENTATION 2
+#endif
+#ifndef HTML_ENDLINE
+#define HTML_ENDLINE "\n"
 #endif
 
 /// Convert a boolean to string like std::boolalpha in a std::ostream
@@ -111,9 +115,9 @@ private:
                 if (mbNonVoid) {
                     aStream << ">";
                 } else if (!mChildren.empty()) {
-                    aStream << ">\n";
+                    aStream << ">" HTML_ENDLINE;
                 } else {
-                    aStream << "/>\n";
+                    aStream << "/>" HTML_ENDLINE;
                 }
             } else {
                 aStream << '>';
@@ -128,7 +132,7 @@ private:
             }
         } else {
             std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
-            aStream << mContent << '\n';
+            aStream << mContent << HTML_ENDLINE;
         }
     }
     void toStringClose(std::ostream& aStream, const size_t aIndentation) const {
@@ -137,7 +141,7 @@ private:
                 std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
             }
             if (!mContent.empty() || !mChildren.empty() || mbNonVoid) {
-                aStream << "</" << mName << ">\n";
+                aStream << "</" << mName << ">" HTML_ENDLINE;
             }
         }
     }

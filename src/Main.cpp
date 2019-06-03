@@ -9,6 +9,10 @@
  * or copy at http://opensource.org/licenses/MIT)
  */
 
+// Note: to configure indentation & minification, define this at compile time before including HTML headers.
+#define HTML_INDENTATION 2 ///< Default indentation can be set to 0 to remove many spaces in generated HTML
+#define HTML_ENDLINE "\n" ///< End of lines can be removed to minimize even more the resulting generated HTML
+
 #include <HTML/HTML.h>
 
 #include <iostream>
@@ -18,7 +22,12 @@
  */
 int main() {
     HTML::Document document("Welcome to HTML");
-	document.addAttribute("lang", "en");
+    document.addAttribute("lang", "en");
+    document.head() << HTML::Meta("utf-8")
+        << HTML::Meta("viewport", "width=device-width, initial-scale=1, shrink-to-fit=no");
+    document.head() << HTML::Rel("stylesheet", "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
+        .addAttribute("integrity", "sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T")
+        .addAttribute("crossorigin", "anonymous");
     document << HTML::Header1("Welcome to HTML").id("anchor_link_1");
     document.body() << "Text directly in the body. ";
     document << HTML::Text("Text directly in the body. ") << HTML::Text("Text directly in the body.") << HTML::Break()
@@ -41,7 +50,7 @@ int main() {
         << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))
         << (HTML::Row() << HTML::Col("") << HTML::Col("Cell_32")));
 
-	document << HTML::Link().id("anchor_link_2");
+    document << HTML::Link().id("anchor_link_2");
 
     std::cout << document;
     return 0;

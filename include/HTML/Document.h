@@ -19,6 +19,14 @@
 /// A simple C++ HTML Generator library.
 namespace HTML {
 
+// Note: to configure indentation & minification, define this at compile time before including HTML headers.
+#ifndef HTML_INDENTATION
+#define HTML_INDENTATION 2
+#endif
+#ifndef HTML_ENDLINE
+#define HTML_ENDLINE "\n"
+#endif
+
 /**
  * @brief Root Element \<html\> of the HTML Document Object Model.
  *
@@ -76,7 +84,7 @@ public:
 
 private:
     std::ostream& toString(std::ostream& aStream) const {
-        aStream << "<!DOCTYPE html>\n";
+        aStream << "<!DOCTYPE html>" HTML_ENDLINE;
         Element::toString(aStream);
         return aStream;
     }
