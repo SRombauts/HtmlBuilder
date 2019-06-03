@@ -30,9 +30,9 @@ The following example is provided in src/Main.cpp.
     document.body() << "Which results in the following HTML page (truncated to fit in this README): ";
     document << HTML::Text("Text directly in the body. ") << HTML::Text("Text directly in the body.") << HTML::Break()
         << HTML::Text("Text directly in the body.");
-    document << HTML::Paragraph("This is the way to go for a big text in a multiline paragraph.");
+    document << HTML::Paragraph("This is the way to go for a big text in a multi-line paragraph.");
     document << HTML::Link("Google", "http://google.com").cls("my_style");
-    document << (HTML::Paragraph("A paragraphe. ").addAttribute("style", "font-family:arial")
+    document << (HTML::Paragraph("A paragraph. ").addAttribute("style", "font-family:arial")
         << HTML::Text("Text child.") << HTML::Break() << HTML::Text("And more text."));
 
     document << (HTML::List()
@@ -56,9 +56,9 @@ Which results in the following HTML page (truncated to fit in this README):
 Text directly in the body. Text directly in the body.
 <br/>
 Text directly in the body.
-<p>This is the way to go for a big text in a multiline paragraph.</p>
+<p>This is the way to go for a big text in a multi-line paragraph.</p>
 <a class="my_style" href="http://google.com">Google</a>
-<p style="font-family:arial">A paragraphe.       Text child.
+<p style="font-family:arial">A paragraph.       Text child.
     <br/>
     And more text.
 </p>
