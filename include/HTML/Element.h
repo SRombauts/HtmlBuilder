@@ -151,7 +151,7 @@ protected:
     std::string mContent;
     std::map<std::string, std::string> mAttributes;
     std::vector<Element> mChildren;
-    bool mbNonVoid = false; // ex. <td></td> (<td/> is not allowed)
+    bool mbNonVoid = false; // Non self-closing element. ex. <td></td> (<td/> is not allowed)
 };
 
 inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) {
@@ -205,6 +205,15 @@ public:
         if (apSrc) {
             addAttribute("src", apSrc);
         }
+        mbNonVoid = true;
+    }
+    Script&& integrity(const std::string& aValue) {
+        addAttribute("integrity", aValue);
+        return std::move(*this);
+    }
+    Script&& crossorigin(const std::string& aValue) {
+        addAttribute("crossorigin", aValue);
+        return std::move(*this);
     }
 };
 
@@ -220,7 +229,7 @@ public:
     }
 };
 
-/// \<link\> Element to reference external CSS or Javascript files in \<head\>
+/// \<link\> Element to reference external CSS or Javascript files
 class Rel : public Element {
 public:
     Rel(const char* apRel, const char* apUrl, const char* apType = nullptr) : Element("link") {
@@ -229,6 +238,14 @@ public:
         if (apType) {
             addAttribute("type", apType);
         }
+    }
+    Rel&& integrity(const std::string& aValue) {
+        addAttribute("integrity", aValue);
+        return std::move(*this);
+    }
+    Rel&& crossorigin(const std::string& aValue) {
+        addAttribute("crossorigin", aValue);
+        return std::move(*this);
     }
 };
 
@@ -725,11 +742,13 @@ public:
         if (!aUrl.empty()) {
             addAttribute("href", aUrl);
         }
+        mbNonVoid = true;
     }
-    Link(const char* apContent = nullptr, const char* apUrl = nullptr) : Element("a", apContent) {
+    explicit Link(const char* apContent = nullptr, const char* apUrl = nullptr) : Element("a", apContent) {
         if (apUrl) {
             addAttribute("href", apUrl);
         }
+        mbNonVoid = true;
     }
 };
 
