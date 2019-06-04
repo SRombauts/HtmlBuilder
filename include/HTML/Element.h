@@ -13,7 +13,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <map>
 #include <algorithm>
 #include <iterator>
 #include <utility>
@@ -49,11 +48,11 @@ public:
         mName(apName), mContent(apContent ? apContent : "") {}
 
     Element&& addAttribute(const char* apName, const std::string& aValue) {
-        mAttributes[apName] = aValue;
+        mAttributes.push_back({apName, aValue});
         return std::move(*this);
     }
     Element&& addAttribute(const char* apName, const unsigned int aValue) {
-        mAttributes[apName] = std::to_string(aValue);
+        mAttributes.push_back({apName, std::to_string(aValue)});
         return std::move(*this);
     }
     Element&& operator<<(Element&& aElement) {
@@ -87,6 +86,11 @@ public:
         return addAttribute("style", aValue);
     }
 
+    struct Attribute {
+        std::string Name;
+        std::string Value;
+    };
+
 protected:
     /// Constructor reserved for the Root \<html\> Element
     Element();
@@ -105,9 +109,9 @@ private:
             aStream << '<' << mName;
 
             for (const auto& attr : mAttributes) {
-                aStream << ' ' << attr.first;
-                if (!attr.second.empty()) {
-                    aStream << "=\"" << attr.second << "\"";
+                aStream << ' ' << attr.Name;
+                if (!attr.Value.empty()) {
+                    aStream << "=\"" << attr.Value << "\"";
                 }
             }
 
@@ -149,7 +153,7 @@ private:
 protected:
     std::string mName;
     std::string mContent;
-    std::map<std::string, std::string> mAttributes;
+    std::vector<Attribute> mAttributes;
     std::vector<Element> mChildren;
     bool mbNonVoid = false; // Non self-closing element. ex. <td></td> (<td/> is not allowed)
 };
