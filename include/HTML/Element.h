@@ -40,12 +40,14 @@ constexpr const char* to_string(bool aBool) {
  */
 class Element {
 public:
+    explicit Element(const char* apName) :
+        mName(apName) {}
     Element(const char* apName, std::string&& aContent) :
         mName(apName), mContent(aContent) {}
     Element(const char* apName, const std::string& aContent) :
         mName(apName), mContent(aContent) {}
-    explicit Element(const char* apName, const char* apContent = nullptr) :
-        mName(apName), mContent(apContent ? apContent : "") {}
+    Element(const char* apName, const char* apContent) :
+        mName(apName), mContent(apContent) {}
 
     Element&& addAttribute(const char* apName, const std::string& aValue) {
         mAttributes.push_back({apName, aValue});
@@ -92,7 +94,7 @@ public:
     };
 
 protected:
-    /// Constructor reserved for the Root \<html\> Element
+    /// Constructor reserved for the Root \<html\> Element as well as the Empty
     Element();
 
     std::ostream& toString(std::ostream& aStream, const size_t aIndentation = 0) const {
@@ -116,12 +118,11 @@ private:
             }
 
             if (mContent.empty()) {
-                if (mbNonVoid) {
-                    aStream << ">";
-                } else if (!mChildren.empty()) {
+                // Note: using children for content is less efficient/breaking the assumption
+                if (!mChildren.empty() || mbVoid) {
                     aStream << ">" HTML_ENDLINE;
                 } else {
-                    aStream << "/>" HTML_ENDLINE;
+                    aStream << ">";
                 }
             } else {
                 aStream << '>';
@@ -144,7 +145,8 @@ private:
             if (!mChildren.empty()) {
                 std::fill_n(std::ostream_iterator<char>(aStream), aIndentation, ' ');
             }
-            if (!mContent.empty() || !mChildren.empty() || mbNonVoid) {
+            // Note: using children for content is less efficient/breaking the assumption
+            if (!mContent.empty() || !mChildren.empty() || !mbVoid) {
                 aStream << "</" << mName << ">" HTML_ENDLINE;
             }
         }
@@ -155,7 +157,11 @@ protected:
     std::string mContent;
     std::vector<Attribute> mAttributes;
     std::vector<Element> mChildren;
-    bool mbNonVoid = false; // Non self-closing element. ex. <td></td> (<td/> is not allowed)
+
+    // Self-closing elements complete list:
+    // <br> <hr> <img> <input> <link> <meta> <col>
+    // <area> <base> <command> <embed> <keygen> <param> <source> <track> <wbr>
+    bool mbVoid = false;
 };
 
 inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) {
@@ -165,7 +171,7 @@ inline std::ostream& operator<<(std::ostream& aStream, const Element& aElement) 
 /// Empty Element, useful as a default parameter for instance
 class Empty : public Element {
 public:
-    Empty() : Element("") {}
+    Empty() : Element() {}
 };
 
 /// Raw content text (unnamed Element) to use as text values between child Elements
@@ -205,11 +211,16 @@ public:
 /// \<script\> Element for inline Javascript in \<head\>
 class Script : public Element {
 public:
-    explicit Script(const char* apSrc, const char* apContent = nullptr) : Element("script", apContent) {
+    Script() : Element("script") {}
+    explicit Script(const char* apSrc) : Element("script") {
         if (apSrc) {
             addAttribute("src", apSrc);
         }
-        mbNonVoid = true;
+    }
+    explicit Script(const char* apSrc, const char* apContent) : Element("script", apContent) {
+        if (apSrc) {
+            addAttribute("src", apSrc);
+        }
     }
     Script&& integrity(const std::string& aValue) {
         addAttribute("integrity", aValue);
@@ -226,10 +237,12 @@ class Meta : public Element {
 public:
     explicit Meta(const char* apCharset) : Element("meta") {
         addAttribute("charset", apCharset);
+        mbVoid = true;
     }
     explicit Meta(const char* apName, const char* apContent) : Element("meta") {
         addAttribute("name", apName);
         addAttribute("content", apContent);
+        mbVoid = true;
     }
 };
 
@@ -242,7 +255,9 @@ public:
         if (apType) {
             addAttribute("type", apType);
         }
+        mbVoid = true;
     }
+
     Rel&& integrity(const std::string& aValue) {
         addAttribute("integrity", aValue);
         return std::move(*this);
@@ -310,21 +325,17 @@ inline Element::Element() : mName("html"), mChildren{Head(), Body()} {
 /// \<br\> Line break Element
 class Break : public Element {
 public:
-    Break() : Element("br") {}
+    Break() : Element("br") {
+        mbVoid = true;
+    }
 };
 
 /// \<th\> Table Header Column Element
 class ColHeader : public Element {
 public:
-    explicit ColHeader(const char* apContent = nullptr) : Element("th", apContent) {
-        mbNonVoid = true;
-    }
-    explicit ColHeader(std::string&& aContent) : Element("th", aContent) {
-        mbNonVoid = true;
-    }
-    explicit ColHeader(const std::string& aContent) : Element("th", aContent) {
-        mbNonVoid = true;
-    }
+    explicit ColHeader(const char* apContent = nullptr) : Element("th", apContent) {}
+    explicit ColHeader(std::string&& aContent) : Element("th", aContent) {}
+    explicit ColHeader(const std::string& aContent) : Element("th", aContent) {}
 
     ColHeader&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
@@ -343,15 +354,9 @@ public:
 /// \<td\> Table Column Element
 class Col : public Element {
 public:
-    explicit Col(const char* apContent = nullptr) : Element("td", apContent) {
-        mbNonVoid = true;
-    }
-    explicit Col(std::string&& aContent) : Element("td", aContent) {
-        mbNonVoid = true;
-    }
-    explicit Col(const std::string& aContent) : Element("td", aContent) {
-        mbNonVoid = true;
-    }
+    explicit Col(const char* apContent = nullptr) : Element("td", apContent) {}
+    explicit Col(std::string&& aContent) : Element("td", aContent) {}
+    explicit Col(const std::string& aContent) : Element("td", aContent) {}
 
     Col&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
@@ -406,11 +411,17 @@ public:
 /// \<li\> List Item Element to put in List
 class ListItem : public Element {
 public:
-    explicit ListItem(const char* apContent = nullptr) : Element("li", apContent) {}
+    ListItem() : Element("li") {}
+    explicit ListItem(const char* apContent) : Element("li", apContent) {}
     explicit ListItem(const std::string& aContent) : Element("li", aContent) {}
 
     ListItem&& operator<<(Element&& aElement) {
         mChildren.push_back(std::move(aElement));
+        return std::move(*this);
+    }
+
+    ListItem&& cls(const std::string& aValue) {
+        addAttribute("class", aValue);
         return std::move(*this);
     }
 };
@@ -419,6 +430,9 @@ public:
 class List : public Element {
 public:
     explicit List(const bool abOrdered = false) : Element(abOrdered?"ol":"ul") {}
+    List(const bool abOrdered, const char* apClass) : Element(abOrdered ?"ol":"ul") {
+        cls(apClass);
+    }
 
     List&& operator<<(Element&& aElement) = delete;
     List&& operator<<(ListItem&& aItem) {
@@ -454,6 +468,7 @@ public:
         if (apValue) {
             addAttribute("value", apValue);
         }
+        mbVoid = true;
     }
 
     Input&& addAttribute(const char* apName, const std::string& aValue) {
@@ -559,7 +574,6 @@ public:
         if (0 < aRows) {
             addAttribute("rows", aRows);
         }
-        mbNonVoid = true;
     }
     TextArea&& maxlength(const unsigned int aMaxlength) {
         addAttribute("maxlength", aMaxlength);
@@ -668,7 +682,6 @@ class Option : public Element {
 public:
     explicit Option(const char* apValue, const char* apContent = nullptr) : Element("option", apContent) {
         addAttribute("value", apValue);
-        mbNonVoid = true;
     }
 
     Option&& selected(const bool abSelected = true) {
@@ -724,7 +737,15 @@ public:
 /// \<div\> division Element to group elements in a rectangular block.
 class Div : public Element {
 public:
-    explicit Div(const std::string& aContent) : Element("div", aContent) {}
+    Div() : Element("div") {}
+    explicit Div(const char* apClass) : Element("div") {
+        cls(apClass);
+    }
+
+    Div&& cls(const std::string& aValue) {
+        addAttribute("class", aValue);
+        return std::move(*this);
+    }
 };
 
 /// \<span\> Element to group inline-elements in a document.
@@ -742,17 +763,17 @@ public:
 /// \<a\> Hyper-Link Element
 class Link : public Element {
 public:
+    Link() : Element("a") {}
+    explicit Link(const char* apContent) : Element("a", apContent) {}
+    explicit Link(const char* apContent, const char* apUrl = nullptr) : Element("a", apContent) {
+        if (apUrl) {
+            addAttribute("href", apUrl);
+        }
+    }
     Link(const std::string& aContent, const std::string& aUrl) : Element("a", aContent) {
         if (!aUrl.empty()) {
             addAttribute("href", aUrl);
         }
-        mbNonVoid = true;
-    }
-    explicit Link(const char* apContent = nullptr, const char* apUrl = nullptr) : Element("a", apContent) {
-        if (apUrl) {
-            addAttribute("href", apUrl);
-        }
-        mbNonVoid = true;
     }
 };
 
@@ -769,6 +790,7 @@ public:
         if (0 < aHeight) {
             addAttribute("height", aHeight);
         }
+        mbVoid = true;
     }
 };
 
@@ -778,7 +800,6 @@ public:
     Progress(const unsigned int aValue, const unsigned int aMax) : Element("progress") {
         addAttribute("value", aValue);
         addAttribute("max", aMax);
-        mbNonVoid = true;
     }
 };
 
@@ -789,7 +810,6 @@ public:
         addAttribute("value", aValue);
         addAttribute("min", aMin);
         addAttribute("max", aMax);
-        mbNonVoid = true;
     }
 };
 
@@ -835,6 +855,9 @@ public:
 class Nav : public Element {
 public:
     Nav() : Element("nav") {}
+    explicit Nav(const char* apClass) : Element("nav") {
+        cls(apClass);
+    }
 };
 
 /// \<aside\> semantic Element
