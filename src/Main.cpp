@@ -27,6 +27,21 @@ int main() {
         << HTML::Meta("viewport", "width=device-width, initial-scale=1, shrink-to-fit=no");
     document.head() << HTML::Rel("stylesheet", "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css")
         .integrity("sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T").crossorigin("anonymous");
+    document.head() << HTML::Style(".navbar{margin-bottom:20px;}");
+
+    HTML::List navList(false, "navbar-nav mr-auto");
+    navList << std::move(HTML::ListItem().cls("nav-item active") << HTML::Link("Home", "#").cls("nav-link"));
+    navList << std::move(HTML::ListItem().cls("nav-item") << HTML::Link("Link", "#").cls("nav-link"));
+    navList << std::move(HTML::ListItem().cls("nav-item") << HTML::Link("Disabled", "#").cls("nav-link disabled"));
+    navList << std::move(HTML::ListItem().cls("nav-item dropdown")
+        << HTML::Link("Dropdown", "#").cls("nav-link dropdown-toggle").id("dropdown01").addAttribute("data-toggl", "dropdown").addAttribute("aria-haspopup", "true").addAttribute("aria-expanded", "false")
+        << (HTML::Div("dropdown-menu").addAttribute("aria-labelledby", "dropdown01")
+            << HTML::Link("Action", "#").cls("dropdown-item")
+            << HTML::Link("Another", "#").cls("dropdown-item")
+        )
+    );
+    document << (HTML::Nav("navbar navbar-expand navbar-dark bg-dark") << (HTML::Div("collapse navbar-collapse") << std::move(navList)));
+
     document << HTML::Header1("Welcome to HTML").id("anchor_link_1");
     document.body() << "Text directly in the body. ";
     document << HTML::Text("Text directly in the body. ") << HTML::Text("Text directly in the body.") << HTML::Break()
