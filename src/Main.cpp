@@ -34,7 +34,7 @@ int main() {
     navList << std::move(HTML::ListItem().cls("nav-item") << HTML::Link("Link", "#").cls("nav-link"));
     navList << std::move(HTML::ListItem().cls("nav-item") << HTML::Link("Disabled", "#").cls("nav-link disabled"));
     navList << std::move(HTML::ListItem().cls("nav-item dropdown")
-        << HTML::Link("Dropdown", "#").cls("nav-link dropdown-toggle").id("dropdown01").addAttribute("data-toggl", "dropdown").addAttribute("aria-haspopup", "true").addAttribute("aria-expanded", "false")
+        << HTML::Link("Dropdown", "#").cls("nav-link dropdown-toggle").id("dropdown01").addAttribute("data-toggle", "dropdown").addAttribute("aria-haspopup", "true").addAttribute("aria-expanded", "false")
         << (HTML::Div("dropdown-menu").addAttribute("aria-labelledby", "dropdown01")
             << HTML::Link("Action", "#").cls("dropdown-item")
             << HTML::Link("Another", "#").cls("dropdown-item")
