@@ -40,14 +40,12 @@ constexpr const char* to_string(bool aBool) {
  */
 class Element {
 public:
-    explicit Element(const char* apName) :
-        mName(apName) {}
+    explicit Element(const char* apName, const char* apContent = nullptr) :
+        mName(apName), mContent(apContent ? apContent : "") {}
     Element(const char* apName, std::string&& aContent) :
         mName(apName), mContent(aContent) {}
     Element(const char* apName, const std::string& aContent) :
         mName(apName), mContent(aContent) {}
-    Element(const char* apName, const char* apContent) :
-        mName(apName), mContent(apContent) {}
 
     Element&& addAttribute(const char* apName, const std::string& aValue) {
         mAttributes.push_back({apName, aValue});
@@ -396,6 +394,12 @@ public:
     }
 };
 
+/// \<caption\> Table Caption Element
+class Caption : public Element {
+public:
+    explicit Caption(const char* apContent) : Element("caption", apContent) {}
+};
+
 /// \<table\> Element
 class Table : public Element {
 public:
@@ -404,6 +408,10 @@ public:
     Table&& operator<<(Element&& aElement) = delete;
     Table&& operator<<(Row&& aRow) {
         mChildren.push_back(std::move(aRow));
+        return std::move(*this);
+    }
+    Table&& operator<<(Caption&& aCaption) {
+        mChildren.push_back(std::move(aCaption));
         return std::move(*this);
     }
 };

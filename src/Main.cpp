@@ -59,6 +59,7 @@ int main() {
                 << HTML::ListItem("val2"))));
 
     document << (HTML::Table()
+        << HTML::Caption("Table caption")
         << (HTML::Row() << HTML::ColHeader("A") << HTML::ColHeader("B"))
         << (HTML::Row() << HTML::Col("Cell_11") << HTML::Col("Cell_12"))
         << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))

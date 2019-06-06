@@ -35,6 +35,9 @@ namespace HTML {
  */
 class Document : public Element {
 public:
+    Document() :
+        Element(), mHead(*static_cast<Head*>(&mChildren[0])), mBody(*static_cast<Body*>(&mChildren[1])) {
+    }
     explicit Document(const char* apTitle) :
         Element(), mHead(*static_cast<Head*>(&mChildren[0])), mBody(*static_cast<Body*>(&mChildren[1])) {
         mHead << HTML::Title(apTitle);
