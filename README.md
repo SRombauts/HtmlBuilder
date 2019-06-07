@@ -1,6 +1,9 @@
 HtmlBuilder
 -----------
 
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SRombauts/HtmlBuilder/blob/master/LICENSE.txt)
+[![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/HtmlBuilder.svg)](https://travis-ci.org/SRombauts/HtmlBuilder "Travis CI Linux Build Status")
+
 A simple C++ header-only HTML 5 Generator library, using a Document Object Model (DOM).
 
 Copyright (c) 2017-2019 Sébastien Rombauts (sebastien.rombauts@gmail.com)
