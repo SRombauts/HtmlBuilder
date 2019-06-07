@@ -1,0 +1,14 @@
+# Copyright (c) 2012-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+
+language: cpp
+
+compiler:
+  - gcc
+  - clang
+ 
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script: make && ctest --output-on-failure
