@@ -3,6 +3,7 @@ HtmlBuilder
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SRombauts/HtmlBuilder/blob/master/LICENSE.txt)
 [![Travis CI Linux Build Status](https://travis-ci.org/SRombauts/HtmlBuilder.svg)](https://travis-ci.org/SRombauts/HtmlBuilder "Travis CI Linux Build Status")
+[![AppVeyor Windows Build status](https://ci.appveyor.com/api/projects/status/github/SRombauts/HtmlBuilder?svg=true)](https://ci.appveyor.com/project/SbastienRombauts/HtmlBuilder "AppVeyor Windows Build status")
 
 A simple C++ header-only HTML 5 Generator library, using a Document Object Model (DOM).
 
@@ -11,6 +12,11 @@ Copyright (c) 2017-2019 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 ## Current status
 
 Deployed in production in a small application.
+
+### Features
+
+1. DOM Model
+2. Example featuring Bootstrap's navigation bar
 
 ### Missing features
 
