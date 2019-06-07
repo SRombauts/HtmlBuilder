@@ -13,6 +13,11 @@ Copyright (c) 2017-2019 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 Deployed in production in a small application.
 
+### Support
+
+- Windows 10 - VS2015 / 2017
+- Linux Ubuntu 16.04 Clang 7 / GCC 5.4
+
 ### Features
 
 1. DOM Model
