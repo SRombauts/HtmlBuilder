@@ -95,8 +95,8 @@ set(doc_files
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # add the application executable
-add_executable(HtmlBuilder ${headers_files} ${doc_files} ${script_files} ${examples_files})
-target_link_libraries(HtmlBuilder ${SYSTEM_LIBRARIES})
+add_executable(HtmlBuilder_example ${headers_files} ${doc_files} ${script_files} ${examples_files})
+target_link_libraries(HtmlBuilder_example ${SYSTEM_LIBRARIES})
 
 
 # Optional additional targets:
@@ -146,3 +146,9 @@ else (RUN_DOXYGEN)
     message(STATUS "RUN_DOXYGEN OFF")
 endif (RUN_DOXYGEN)
 
+
+    # add a "test" target:
+    enable_testing()
+
+    # does the example1 runs successfully?
+    add_test(ExampleRun HtmlBuilder_example)
