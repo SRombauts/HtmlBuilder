@@ -233,6 +233,7 @@ public:
 /// \<meta\> metadata about the Document in \<head\>
 class Meta : public Element {
 public:
+    Meta() : Element("meta") {}
     explicit Meta(const char* apCharset) : Element("meta") {
         addAttribute("charset", apCharset);
         mbVoid = true;
@@ -562,6 +563,14 @@ public:
     }
 };
 
+/// \<input\> hidden Element to use in Form
+class InputHidden : public Input {
+public:
+    explicit InputHidden(const char* apName, const char* apValue = nullptr) :
+        Input("hidden", apName, apValue) {
+    }
+};
+
 /// \<input\> text Element to use in Form
 class InputText : public Input {
 public:
@@ -782,6 +791,10 @@ public:
         if (!aUrl.empty()) {
             addAttribute("href", aUrl);
         }
+    }
+    Link&& target(const char* apValue) {
+        addAttribute("target", apValue);
+        return std::move(*this);
     }
 };
 
