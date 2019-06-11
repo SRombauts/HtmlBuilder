@@ -73,6 +73,8 @@ int main() {
         << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))
         << (HTML::Row() << HTML::Col("") << HTML::Col("Cell_32")));
 
+    main << HTML::Small("Copyright Sebastien Rombauts @ 2017-2019");
+
     main << HTML::Link().id("anchor_link_2");
 
     document << std::move(main);

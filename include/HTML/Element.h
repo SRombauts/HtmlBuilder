@@ -739,9 +739,21 @@ public:
     explicit Italic(const std::string& aContent) : Element("i", aContent) {}
 };
 
-/// \<strong\> Element
+/// \<small\> Element for side-comment text and small print, including copyright and legal text
+class Small : public Element {
+public:
+    Small() : Element("small") {}
+    explicit Small(const char* apContent) : Element("small", apContent) {}
+    explicit Small(std::string&& aContent) : Element("small", aContent) {}
+    explicit Small(const std::string& aContent) : Element("small", aContent) {}
+};
+
+/// \<strong\> Element for important text
 class Strong : public Element {
 public:
+    Strong() : Element("strong") {}
+    explicit Strong(const char* apContent) : Element("strong", apContent) {}
+    explicit Strong(std::string&& aContent) : Element("strong", aContent) {}
     explicit Strong(const std::string& aContent) : Element("strong", aContent) {}
 };
 
