@@ -70,7 +70,7 @@ int main() {
         << HTML::Caption("Table caption")
         << (HTML::Row() << HTML::ColHeader("A") << HTML::ColHeader("B"))
         << (HTML::Row() << HTML::Col("Cell_11") << HTML::Col("Cell_12"))
-        << (HTML::Row() << HTML::Col("Cell_21") << HTML::Col("Cell_22"))
+        << (HTML::Row() << HTML::Col("Cell_21") << (HTML::Col() << HTML::Link("Wikipedia", "https://www.wikipedia.org/")))
         << (HTML::Row() << HTML::Col("") << HTML::Col("Cell_32")));
 
     main << HTML::Small("Copyright Sebastien Rombauts @ 2017-2019");

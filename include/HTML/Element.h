@@ -336,6 +336,11 @@ public:
     explicit ColHeader(std::string&& aContent) : Element("th", aContent) {}
     explicit ColHeader(const std::string& aContent) : Element("th", aContent) {}
 
+    ColHeader&& operator<<(Element&& aElement) {
+        mChildren.push_back(std::move(aElement));
+        return std::move(*this);
+    }
+
     ColHeader&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
             addAttribute("rowspan", aNbRow);
@@ -356,6 +361,11 @@ public:
     explicit Col(const char* apContent = nullptr) : Element("td", apContent) {}
     explicit Col(std::string&& aContent) : Element("td", aContent) {}
     explicit Col(const std::string& aContent) : Element("td", aContent) {}
+
+    Col&& operator<<(Element&& aElement) {
+        mChildren.push_back(std::move(aElement));
+        return std::move(*this);
+    }
 
     Col&& rowSpan(const unsigned int aNbRow) {
         if (0 < aNbRow) {
