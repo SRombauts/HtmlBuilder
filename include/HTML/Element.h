@@ -837,6 +837,15 @@ public:
     }
 };
 
+/// \<button\> Button Element
+class Button : public Element {
+public:
+    Button(const char* apContent, const char* apType = "button") :
+        Element("button", apContent) {
+        addAttribute("type", apType);
+    }
+};
+
 /// \<progress\> Element
 class Progress : public Element {
 public:
