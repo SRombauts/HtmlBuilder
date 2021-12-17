@@ -70,18 +70,30 @@ public:
         return stream.str();
     }
 
+    Element&& id(const char* apValue) {
+        return addAttribute("id", apValue);
+    }
     Element&& id(const std::string& aValue) {
         return addAttribute("id", aValue);
     }
 
+    Element&& cls(const char* apValue) {
+        return addAttribute("class", apValue);
+    }
     Element&& cls(const std::string& aValue) {
         return addAttribute("class", aValue);
     }
 
+    Element&& title(const char* apValue) {
+        return addAttribute("title", apValue);
+    }
     Element&& title(const std::string& aValue) {
         return addAttribute("title", aValue);
     }
 
+    Element&& style(const char* apValue) {
+        return addAttribute("style", apValue);
+    }
     Element&& style(const std::string& aValue) {
         return addAttribute("style", aValue);
     }
