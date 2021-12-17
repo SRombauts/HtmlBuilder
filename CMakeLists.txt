@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2019 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+# Copyright (c) 2017-2021 SÃ©bastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
@@ -110,6 +110,8 @@ if (RUN_CPPLINT)
          ALL
          COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/cpplint/cpplint.py ${CPPLINT_ARG_OUTPUT} ${CPPLINT_ARG_LINELENGTH} ${CPPLINT_ARG_VERBOSE} ${headers_files}
         )
+    else (PYTHONINTERP_FOUND)
+        message(STATUS "Could NOT find Python")
     endif (PYTHONINTERP_FOUND)
 else (RUN_CPPLINT)
     message(STATUS "RUN_CPPLINT OFF")

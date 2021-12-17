@@ -3,7 +3,7 @@
  * @ingroup HtmlBuilder
  * @brief   A simple C++ HTML Generator library.
  *
- * Copyright (c) 2017-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2017-2021 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -73,9 +73,11 @@ int main() {
         << (HTML::Row() << HTML::Col("Cell_21") << (HTML::Col() << HTML::Link("Wikipedia", "https://www.wikipedia.org/")))
         << (HTML::Row() << HTML::Col("") << HTML::Col("Cell_32")));
 
-    main << HTML::Small("Copyright Sebastien Rombauts @ 2017-2019");
+    main << HTML::Small("Copyright Sebastien Rombauts @ 2017-2021");
 
     main << HTML::Link().id("anchor_link_2");
+
+    // TODO HTML::Form(), InputCheckbox() etc
 
     document << std::move(main);
 

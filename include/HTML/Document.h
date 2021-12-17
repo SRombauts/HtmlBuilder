@@ -3,7 +3,7 @@
  * @ingroup HtmlBuilder
  * @brief   Root Element of the HTML Document Object Model.
  *
- * Copyright (c) 2017-2019 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2017-2021 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
