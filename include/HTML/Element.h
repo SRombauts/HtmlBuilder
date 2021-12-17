@@ -361,6 +361,13 @@ public:
     explicit Col(const char* apContent = nullptr) : Element("td", apContent) {}
     explicit Col(std::string&& aContent) : Element("td", aContent) {}
     explicit Col(const std::string& aContent) : Element("td", aContent) {}
+    explicit Col(const bool abContent) : Element("td", to_string(abContent)) {}
+    explicit Col(const int aContent) : Element("td", std::to_string(aContent)) {}
+    explicit Col(const unsigned int aContent) : Element("td", std::to_string(aContent)) {}
+    explicit Col(const long long aContent) : Element("td", std::to_string(aContent)) {}
+    explicit Col(const unsigned long long aContent) : Element("td", std::to_string(aContent)) {}
+    explicit Col(const float aContent) : Element("td", std::to_string(aContent)) {}
+    explicit Col(const double aContent) : Element("td", std::to_string(aContent)) {}
 
     Col&& operator<<(Element&& aElement) {
         mChildren.push_back(std::move(aElement));
