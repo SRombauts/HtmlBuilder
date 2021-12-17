@@ -47,6 +47,12 @@ public:
     Element(const char* apName, const std::string& aContent) :
         mName(apName), mContent(aContent) {}
 
+    Element&& addAttribute(const char* apName, const char* apValue) {
+        if (apName && apValue) {
+            mAttributes.push_back({ apName, apValue });
+        }
+        return std::move(*this);
+    }
     Element&& addAttribute(const char* apName, const std::string& aValue) {
         mAttributes.push_back({apName, aValue});
         return std::move(*this);
