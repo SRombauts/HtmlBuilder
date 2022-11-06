@@ -7,7 +7,9 @@ HtmlBuilder
 
 A simple C++ header-only HTML 5 Generator library, using a Document Object Model (DOM).
 
-Copyright (c) 2017-2021 Sébastien Rombauts (sebastien.rombauts@gmail.com)
+![HTML5 logo](https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/260px-HTML5_logo_and_wordmark.svg.png)
+
+Copyright (c) 2017-2022 Sébastien Rombauts (sebastien.rombauts@gmail.com)
 
 ## Current status
 
