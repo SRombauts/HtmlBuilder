@@ -15,5 +15,5 @@
  * @brief    A simple C++ header-only HTML Generator library, using a Document Object Model (DOM).
  */
 
-#include "Element.h"
-#include "Document.h"
+#include "HTML/Element.h"
+#include "HTML/Document.h"
